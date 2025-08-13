@@ -1,11 +1,11 @@
-package com.example.batch.config;
+package com.duoc.batch_demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.batch.item.ItemProcessor;
 
-import com.example.batch.model.Person;
-import com.example.batch.processor.PersonItemProcessor;
+import com.duoc.batch_demo.model.Person;
+import com.duoc.batch_demo.processor.PersonItemProcessor;
 
 @Configuration
 public class ProcessorConfig {

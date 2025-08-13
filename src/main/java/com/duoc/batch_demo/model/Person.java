@@ -1,4 +1,4 @@
-package com.example.batch.model;
+package com.duoc.batch_demo.model;
 
 public class Person {
     private Long id;
