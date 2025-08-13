@@ -18,10 +18,10 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 
-import com.example.batch.model.Person;
-import com.example.batch.config.ReaderConfig;
-import com.example.batch.config.ProcessorConfig;
-import com.example.batch.config.WriterConfig;
+import com.duoc.batch_demo.model.Person;
+import com.duoc.batch_demo.config.ReaderConfig;
+import com.duoc.batch_demo.config.ProcessorConfig;
+import com.duoc.batch_demo.config.WriterConfig;
 
 @Configuration
 @EnableBatchProcessing

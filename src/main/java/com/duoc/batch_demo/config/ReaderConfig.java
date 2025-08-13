@@ -1,4 +1,4 @@
-package com.example.batch.config;
+package com.duoc.batch_demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +8,7 @@ import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 
-import com.example.batch.model.Person;
+import com.duoc.batch_demo.model.Person;
 
 @Configuration
 public class ReaderConfig {

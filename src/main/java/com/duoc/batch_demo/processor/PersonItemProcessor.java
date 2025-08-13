@@ -1,8 +1,8 @@
-package com.example.batch.processor;
+package com.duoc.batch_demo.processor;
 
 import org.springframework.batch.item.ItemProcessor;
 
-import com.example.batch.model.Person;
+import com.duoc.batch_demo.model.Person;
 
 /**
  * ItemProcessor implementation that normalizes Person data.
