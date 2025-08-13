@@ -1,7 +1,5 @@
 package com.duoc.batch_demo;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.Step;
@@ -10,26 +8,40 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.support.JdbcTransactionManager;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
+
+import com.example.batch.model.Person;
+import com.example.batch.config.ReaderConfig;
+import com.example.batch.config.ProcessorConfig;
+import com.example.batch.config.WriterConfig;
 
 @Configuration
 @EnableBatchProcessing
-@Import(DataSourceConfiguration.class)
+@Import({DataSourceConfiguration.class, ReaderConfig.class, ProcessorConfig.class, WriterConfig.class})
 public class BatchDemoApplication {
 
-@Bean
-	public Step step(JobRepository jobRepository, JdbcTransactionManager transactionManager) {
-		return new StepBuilder("step", jobRepository).tasklet((contribution, chunkContext) -> {
-			System.out.println("Hello world!");
-			return RepeatStatus.FINISHED;
-		}, transactionManager).build();
-	}
+
+        @Bean
+        public Step step(JobRepository jobRepository,
+                         JdbcTransactionManager transactionManager,
+                         ItemReader<Person> itemReader,
+                         ItemProcessor<Person, Person> itemProcessor,
+                         ItemWriter<Person> itemWriter) {
+                return new StepBuilder("step", jobRepository)
+                                .<Person, Person>chunk(10, transactionManager)
+                                .reader(itemReader)
+                                .processor(itemProcessor)
+                                .writer(itemWriter)
+                                .build();
+        }
 
 	@Bean
 	public Job job(JobRepository jobRepository, Step step) {
