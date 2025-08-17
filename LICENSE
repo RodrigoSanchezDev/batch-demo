@@ -26,8 +26,8 @@ SOFTWARE.
 ==========================================
 
 Este proyecto fue desarrollado como parte del curso "Desarrollo Backend III" 
-en DUOC UC bajo la supervisión del profesor Carlos Valverde, implementando un 
-sistema empresarial de procesamiento por lotes con Spring Boot y Spring Batch.
+en DUOC UC, implementando un sistema empresarial de procesamiento por lotes 
+con Spring Boot y Spring Batch.
 
 Características del Sistema:
 - Procesamiento de datos bancarios legacy
