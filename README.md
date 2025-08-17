@@ -406,14 +406,14 @@ Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
 ### Desarrollado por
 **Rodrigo Sánchez**  
 🌐 Portfolio: [sanchezdev.com](https://sanchezdev.com)  
-📧 Email: contacto@sanchezdev.com  
-💼 LinkedIn: [linkedin.com/in/rodrigosanchezdev](https://linkedin.com/in/rodrigosanchezdev)  
+📧 Email: rodrigo@sanchezdev.com  
+💼 LinkedIn: [linkedin.com/in/sanchezdev](https://linkedin.com/in/sanchezdev)  
 🐙 GitHub: [github.com/RodrigoSanchezDev](https://github.com/RodrigoSanchezDev)
 
 ### Agradecimientos
-- DUOC UC - Desarrollo Backend III
-- Spring Framework Team
-- Comunidad Open Source
+- **DUOC UC - Desarrollo Backend III** - Profesor Carlos Valverde por su guía técnica y metodológica
+- **Spring Framework Team** - Por el excelente framework empresarial
+- **Comunidad Open Source** - Por el conocimiento compartido
 
 ---
 

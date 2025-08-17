@@ -22,7 +22,7 @@ public class EstadoCuentaAnualItemProcessor implements ItemProcessor<CuentaAnual
         // Obtener o crear el estado de cuenta para esta cuenta
         EstadoCuentaAnual estado = estadosPorCuenta.computeIfAbsent(cuentaId, id -> {
             EstadoCuentaAnual nuevoEstado = new EstadoCuentaAnual(cuentaId, "CUENTA_" + cuentaId);
-            // En un escenario real, aquí buscaríamos el nombre real de la cuenta
+            // Para implementación completa se integraría con servicio de cuentas
             return nuevoEstado;
         });
 
