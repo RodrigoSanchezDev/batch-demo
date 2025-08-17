@@ -1,0 +1,77 @@
+MIT License
+
+Copyright (c) 2025 Rodrigo Sánchez
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+🏦 SISTEMA DE PROCESAMIENTO BANCARIO BATCH
+==========================================
+
+Este proyecto fue desarrollado como parte del curso "Desarrollo Backend III" 
+en DUOC UC, implementando un sistema empresarial de procesamiento por lotes 
+con Spring Boot y Spring Batch.
+
+Características del Sistema:
+- Procesamiento de datos bancarios legacy
+- Detección automática de anomalías
+- Políticas de tolerancia a fallos
+- Persistencia en MySQL con Spring Batch
+- 6 Jobs de procesamiento secuencial
+- Sistema de métricas y monitoreo
+
+Desarrollado por:
+Rodrigo Sánchez - https://sanchezdev.com
+
+Tecnologías Utilizadas:
+- Spring Boot 3.5.4
+- Spring Batch
+- MySQL 8.0+
+- Java 17
+- Maven
+
+Para más información sobre el uso y configuración, consulta el archivo README.md
+
+---
+
+TÉRMINOS DE USO ACADÉMICO Y COMERCIAL
+=====================================
+
+Este software puede ser utilizado con fines:
+✓ Académicos y educativos
+✓ Comerciales y empresariales  
+✓ Modificación y redistribución
+✓ Uso en proyectos de código abierto
+✓ Integración en sistemas existentes
+
+CRÉDITOS REQUERIDOS:
+Cuando uses este código en proyectos derivados, se agradece (pero no es obligatorio) 
+incluir una referencia al autor original y al repositorio fuente.
+
+EXENCIÓN DE RESPONSABILIDAD:
+Este software se proporciona "tal como está" con fines educativos y de demostración.
+Para uso en producción, se recomienda realizar pruebas exhaustivas y adaptaciones
+según los requerimientos específicos de seguridad y rendimiento de cada organización.
+
+Contacto del Desarrollador:
+- Portfolio: https://sanchezdev.com
+- Email: contacto@sanchezdev.com  
+- LinkedIn: https://linkedin.com/in/rodrigosanchezdev
+- GitHub: https://github.com/RodrigoSanchezDev
