@@ -11,10 +11,12 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 
 import com.duoc.batch_demo.model.AnomaliaTransaccion;
@@ -29,8 +31,14 @@ import com.duoc.batch_demo.model.Transaccion;
 public class BankBatchSpringBootApplication {
 
     public static void main(String[] args) throws Exception {
-        System.out.println("\n🏦 ===== SISTEMA DE PROCESAMIENTO BANCARIO BATCH (SPRING BOOT) ===== 🏦");
-        System.out.println("🚀 Iniciando procesamiento de datos bancarios legacy con MySQL...\n");
+        System.out.println("\n===== SISTEMA DE PROCESAMIENTO BANCARIO BATCH CON ESCALAMIENTO PARALELO =====");
+        System.out.println("Iniciando procesamiento con 3 hilos paralelos y chunks de tamaño 5...\n");
+        System.out.println("=== CONFIGURACIÓN DE ESCALAMIENTO PARALELO ===");
+        System.out.println("   Hilos de ejecución paralela: 3");
+        System.out.println("   Tamaño de chunks: 5 registros");
+        System.out.println("   Tolerancia a fallos: Integrada");
+        System.out.println("   Monitoreo de rendimiento: Activo");
+        System.out.println("===============================================================\n");
 
         // Configurar para no ejecutar automáticamente los jobs
         System.setProperty("spring.batch.job.enabled", "false");
@@ -44,53 +52,59 @@ public class BankBatchSpringBootApplication {
             // EJECUTAR LOS 3 JOBS PRINCIPALES CON DETALLES
             // ============================================
             
-            System.out.println("📊 === EJECUTANDO JOB 1: REPORTE DE TRANSACCIONES DIARIAS ===");
+            System.out.println("=== EJECUTANDO JOB 1: REPORTE DE TRANSACCIONES DIARIAS ===");
             Job reporteTransaccionesJob = context.getBean("reporteTransaccionesJob", Job.class);
             jobLauncher.run(reporteTransaccionesJob, new JobParameters());
 
-            System.out.println("🚨 === EJECUTANDO PROCESAMIENTO DE ANOMALÍAS ===");
+            System.out.println("=== EJECUTANDO PROCESAMIENTO DE ANOMALÍAS ===");
             Job anomaliasJob = context.getBean("anomaliasJob", Job.class);
             jobLauncher.run(anomaliasJob, new JobParameters());
             // Las anomalías se procesan junto con las transacciones
 
-            System.out.println("\n💰 === EJECUTANDO JOB 2: CÁLCULO DE INTERESES MENSUALES ===");
+            System.out.println("\n=== EJECUTANDO JOB 2: CÁLCULO DE INTERESES MENSUALES ===");
             Job calculoInteresesJob = context.getBean("calculoInteresesJob", Job.class);
             jobLauncher.run(calculoInteresesJob, new JobParameters());
 
-            System.out.println("💾 === EJECUTANDO GUARDADO DE DETALLES DE INTERESES ===");
+            System.out.println("=== EJECUTANDO GUARDADO DE DETALLES DE INTERESES ===");
             Job interesesDetalleJob = context.getBean("interesesDetalleJob", Job.class);
             jobLauncher.run(interesesDetalleJob, new JobParameters());
 
-            System.out.println("\n📋 === EJECUTANDO JOB 3: GENERACIÓN DE ESTADOS DE CUENTA ANUALES ===");
+            System.out.println("\n=== EJECUTANDO JOB 3: GENERACIÓN DE ESTADOS DE CUENTA ANUALES ===");
             Job estadosCuentaAnualesJob = context.getBean("estadosCuentaAnualesJob", Job.class);
             jobLauncher.run(estadosCuentaAnualesJob, new JobParameters());
 
-            System.out.println("📈 === EJECUTANDO PROCESAMIENTO DE ESTADOS DETALLADOS ===");
+            System.out.println("=== EJECUTANDO PROCESAMIENTO DE ESTADOS DETALLADOS ===");
             Job estadosDetalleJob = context.getBean("estadosDetalleJob", Job.class);
             jobLauncher.run(estadosDetalleJob, new JobParameters());
 
             // ============================================
             // NUEVOS JOBS PARA DETECTAR TODAS LAS ANOMALÍAS
             // ============================================
-            System.out.println("\n🔍 === EJECUTANDO DETECCIÓN AVANZADA DE ANOMALÍAS EN TRANSACCIONES ===");
+            System.out.println("\n=== EJECUTANDO DETECCIÓN AVANZADA DE ANOMALÍAS EN TRANSACCIONES ===");
             Job deteccionAnomalíasAvanzadasJob = context.getBean("deteccionAnomalíasAvanzadasJob", Job.class);
             jobLauncher.run(deteccionAnomalíasAvanzadasJob, new JobParameters());
 
-            System.out.println("\n🔍 === EJECUTANDO DETECCIÓN DE DUPLICADOS Y ANOMALÍAS EN CUENTAS ===");
+            System.out.println("\n=== EJECUTANDO DETECCIÓN DE DUPLICADOS Y ANOMALÍAS EN CUENTAS ===");
             Job deteccionAnomalíasCuentasJob = context.getBean("deteccionAnomalíasCuentasJob", Job.class);
             jobLauncher.run(deteccionAnomalíasCuentasJob, new JobParameters());
 
-            System.out.println("\n✅ ===== PROCESAMIENTO BANCARIO COMPLETADO EXITOSAMENTE ===== ✅");
-            System.out.println("📈 Todos los datos han sido procesados y almacenados en MySQL.");
-            System.out.println("🔍 Sistema de detección avanzada de anomalías ejecutado:");
-            System.out.println("   ✓ Montos negativos y cero detectados");
-            System.out.println("   ✓ Tipos de transacción inválidos identificados");
-            System.out.println("   ✓ Registros duplicados encontrados");
-            System.out.println("   ✓ Edades fuera de rango detectadas");
-            System.out.println("   ✓ Datos faltantes identificados");
-            System.out.println("🔍 Ahora puedes conectar MySQL Workbench para ver los resultados.");
-            System.out.println("💡 Verificando tablas: transacciones, cuentas, cuentas_anuales,");
-            System.out.println("   intereses_calculados, anomalias_transacciones, estados_cuenta_anuales\n");
+            System.out.println("\n===== PROCESAMIENTO BANCARIO PARALELO COMPLETADO EXITOSAMENTE =====");
+            System.out.println("Todos los datos han sido procesados con escalamiento paralelo en MySQL.");
+            System.out.println("RESUMEN DE ESCALAMIENTO:");
+            System.out.println("   3 hilos de ejecución paralela utilizados");
+            System.out.println("   Chunks de tamaño 5 procesados eficientemente");
+            System.out.println("   Tolerancia a fallos aplicada en todos los steps");
+            System.out.println("   Métricas de rendimiento capturadas");
+            System.out.println("Sistema de detección avanzada de anomalías ejecutado con paralelismo:");
+            System.out.println("   Montos negativos y cero detectados en paralelo");
+            System.out.println("   Tipos de transacción inválidos identificados concurrentemente");
+            System.out.println("   Registros duplicados encontrados con múltiples threads");
+            System.out.println("   Edades fuera de rango detectadas paralelamente");
+            System.out.println("   Datos faltantes identificados con escalamiento");
+            System.out.println("Conectar MySQL Workbench para revisar los resultados del procesamiento paralelo.");
+            System.out.println("Verificar tablas: transacciones, cuentas, cuentas_anuales,");
+            System.out.println("   intereses_calculados, anomalias_transacciones, estados_cuenta_anuales");
+            System.out.println("Logs de escalamiento disponibles arriba para análisis de rendimiento.\n");
 
         } catch (Exception e) {
             System.err.println("❌ Error durante el procesamiento: " + e.getMessage());
@@ -106,7 +120,7 @@ public class BankBatchSpringBootApplication {
     // ============================================
 
     // ============================================
-    // JOB 1: REPORTE DE TRANSACCIONES DIARIAS
+    // JOB 1: REPORTE DE TRANSACCIONES DIARIAS CON ESCALAMIENTO PARALELO
     // ============================================
     @Bean
     public Step transaccionesStep(JobRepository jobRepository,
@@ -116,12 +130,23 @@ public class BankBatchSpringBootApplication {
                                  ItemWriter<Transaccion> transaccionWriter,
                                  org.springframework.retry.RetryPolicy transaccionesRetryPolicy,
                                  org.springframework.batch.core.step.skip.SkipPolicy transaccionesSkipPolicy,
-                                 org.springframework.batch.core.StepExecutionListener faultToleranceListener) {
+                                 org.springframework.batch.core.StepExecutionListener faultToleranceListener,
+                                 @Qualifier("transactionTaskExecutor") TaskExecutor transactionTaskExecutor,
+                                 @Qualifier("optimizedChunkSize") Integer chunkSize) {
+        
+        System.out.println("=== CONFIGURANDO STEP TRANSACCIONES CON ESCALAMIENTO PARALELO ===");
+        System.out.println("   TaskExecutor: " + transactionTaskExecutor.getClass().getSimpleName());
+        System.out.println("   Chunk Size: " + chunkSize + " registros");
+        System.out.println("   Hilos paralelos: 3");
+        System.out.println("   Tolerancia a fallos integrada");
+        
         return new StepBuilder("transaccionesStep", jobRepository)
-                .<Transaccion, Transaccion>chunk(10, transactionManager)
+                .<Transaccion, Transaccion>chunk(chunkSize, transactionManager)  // Chunk size 5
                 .reader(transaccionReader)
                 .processor(transaccionItemProcessor)
                 .writer(transaccionWriter)
+                // Escalamiento paralelo con 3 hilos
+                .taskExecutor(transactionTaskExecutor)
                 // 🛡️ TOLERANCIA A FALLOS PARA TRANSACCIONES PRINCIPALES
                 .faultTolerant()
                 .retryPolicy(transaccionesRetryPolicy)
@@ -138,7 +163,7 @@ public class BankBatchSpringBootApplication {
     }
 
     // ============================================
-    // JOB 2: CÁLCULO DE INTERESES MENSUALES
+    // JOB 2: CÁLCULO DE INTERESES MENSUALES CON ESCALAMIENTO PARALELO
     // ============================================
     @Bean
     public Step interesesStep(JobRepository jobRepository,
@@ -148,12 +173,23 @@ public class BankBatchSpringBootApplication {
                              ItemWriter<Cuenta> cuentaWriter,
                              org.springframework.retry.RetryPolicy cuentasRetryPolicy,
                              org.springframework.batch.core.step.skip.SkipPolicy cuentasSkipPolicy,
-                             org.springframework.batch.core.StepExecutionListener faultToleranceListener) {
+                             org.springframework.batch.core.StepExecutionListener faultToleranceListener,
+                             @Qualifier("accountTaskExecutor") TaskExecutor accountTaskExecutor,
+                             @Qualifier("optimizedChunkSize") Integer chunkSize) {
+        
+        System.out.println("=== CONFIGURANDO STEP INTERESES CON ESCALAMIENTO PARALELO ===");
+        System.out.println("   TaskExecutor: " + accountTaskExecutor.getClass().getSimpleName());
+        System.out.println("   Chunk Size: " + chunkSize + " registros");
+        System.out.println("   Hilos paralelos: 3 (escalamiento hasta 4)");
+        System.out.println("   Tolerancia a fallos para cuentas");
+        
         return new StepBuilder("interesesStep", jobRepository)
-                .<Cuenta, Cuenta>chunk(10, transactionManager)
+                .<Cuenta, Cuenta>chunk(chunkSize, transactionManager)  // Chunk size 5
                 .reader(cuentaReader)
                 .processor(interesesItemProcessor)
                 .writer(cuentaWriter)
+                // Escalamiento paralelo con balanceamiento dinámico
+                .taskExecutor(accountTaskExecutor)
                 // 🛡️ TOLERANCIA A FALLOS PARA CÁLCULO DE INTERESES
                 .faultTolerant()
                 .retryPolicy(cuentasRetryPolicy)     // Más conservador para cuentas
@@ -267,7 +303,7 @@ public class BankBatchSpringBootApplication {
     // JOBS AVANZADOS PARA DETECCIÓN DE ANOMALÍAS CON POLÍTICAS DE REINTENTO Y OMISIÓN
     // ============================================
     
-    // Step para detectar TODAS las anomalías en transacciones
+    // Step para detectar TODAS las anomalías en transacciones con ESCALAMIENTO PARALELO
     @Bean
     public Step deteccionAnomalíasAvanzadasStep(JobRepository jobRepository,
                                                JdbcTransactionManager transactionManager,
@@ -276,12 +312,23 @@ public class BankBatchSpringBootApplication {
                                                org.springframework.batch.item.ItemWriter<java.util.List<AnomaliaTransaccion>> anomaliaListWriter,
                                                org.springframework.retry.RetryPolicy transaccionesRetryPolicy,
                                                org.springframework.batch.core.step.skip.SkipPolicy transaccionesSkipPolicy,
-                                               org.springframework.batch.core.StepExecutionListener faultToleranceListener) {
+                                               org.springframework.batch.core.StepExecutionListener faultToleranceListener,
+                                               @Qualifier("anomalyTaskExecutor") TaskExecutor anomalyTaskExecutor,
+                                               @Qualifier("optimizedChunkSize") Integer chunkSize) {
+        
+        System.out.println("=== CONFIGURANDO DETECCIÓN ANOMALÍAS CON ESCALAMIENTO PARALELO ===");
+        System.out.println("   TaskExecutor: " + anomalyTaskExecutor.getClass().getSimpleName());
+        System.out.println("   Chunk Size: " + chunkSize + " registros");
+        System.out.println("   Hilos paralelos: 3 (escalamiento hasta 6)");
+        System.out.println("   Detección inteligente de anomalías");
+        
         return new StepBuilder("deteccionAnomalíasAvanzadasStep", jobRepository)
-                .<Transaccion, java.util.List<AnomaliaTransaccion>>chunk(5, transactionManager)
+                .<Transaccion, java.util.List<AnomaliaTransaccion>>chunk(chunkSize, transactionManager)
                 .reader(todasLasTransaccionesReader)
                 .processor(detectarAnomalíasLegacyProcessor)
                 .writer(anomaliaListWriter)
+                // Escalamiento paralelo para análisis de anomalías
+                .taskExecutor(anomalyTaskExecutor)
                 // 🛡️ POLÍTICAS PERSONALIZADAS DE TOLERANCIA A FALLOS
                 .faultTolerant()
                 .retryPolicy(transaccionesRetryPolicy) // Política de reintento personalizada

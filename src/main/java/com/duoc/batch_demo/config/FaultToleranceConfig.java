@@ -15,25 +15,22 @@ import org.springframework.retry.policy.ExceptionClassifierRetryPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 
 /**
- * 🛡️ CONFIGURACIÓN AVANZADA DE TOLERANCIA A FALLOS
+ * Configuración de tolerancia a fallos para procesamiento batch.
  * 
- * Esta configuración implementa políticas personalizadas para el manejo
- * robusto de errores en el procesamiento batch bancario.
+ * Implementa políticas personalizadas de reintento y omisión
+ * para manejo robusto de errores en operaciones bancarias.
  * 
  * @author Rodrigo Sanchez
- * @version 1.0
- * @since 2025
+ * @version 1.1
  */
 @Configuration
 public class FaultToleranceConfig {
 
-    // ============================================
-    // POLÍTICAS DE REINTENTO PERSONALIZADAS
-    // ============================================
+    // Políticas de reintento personalizadas
     
     /**
-     * 🔄 Política de reintento para transacciones bancarias
-     * Maneja diferentes tipos de excepciones con estrategias específicas
+     * Política de reintento para transacciones bancarias.
+     * Maneja diferentes tipos de excepciones con estrategias específicas.
      */
     @Bean
     public RetryPolicy transaccionesRetryPolicy() {
@@ -47,7 +44,7 @@ public class FaultToleranceConfig {
         java.util.Map<Class<? extends Throwable>, RetryPolicy> policyMap = 
             new java.util.HashMap<>();
         
-        // 🔄 Errores de base de datos: 5 reintentos (problemas temporales de conectividad)
+        // Errores de base de datos: 5 reintentos (problemas temporales de conectividad)
         SimpleRetryPolicy dbRetryPolicy = new SimpleRetryPolicy();
         dbRetryPolicy.setMaxAttempts(5);
         policyMap.put(SQLException.class, dbRetryPolicy);

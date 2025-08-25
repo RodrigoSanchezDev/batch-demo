@@ -27,7 +27,7 @@ public class ReaderConfig {
     @Bean
     public FlatFileItemReader<Transaccion> transaccionReader() {
         FlatFileItemReader<Transaccion> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("data/semana_1/transacciones.csv"));
+        reader.setResource(new ClassPathResource("data/transacciones.csv"));
         reader.setLinesToSkip(1); // Skip header
         
         DefaultLineMapper<Transaccion> lineMapper = new DefaultLineMapper<>();
@@ -82,7 +82,7 @@ public class ReaderConfig {
     @Bean
     public FlatFileItemReader<Cuenta> cuentaReader() {
         FlatFileItemReader<Cuenta> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("data/semana_1/intereses.csv"));
+        reader.setResource(new ClassPathResource("data/intereses.csv"));
         reader.setLinesToSkip(1); // Skip header
         
         DefaultLineMapper<Cuenta> lineMapper = new DefaultLineMapper<>();
@@ -141,7 +141,7 @@ public class ReaderConfig {
     @Bean
     public FlatFileItemReader<CuentaAnual> cuentaAnualReader() {
         FlatFileItemReader<CuentaAnual> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("data/semana_1/cuentas_anuales.csv"));
+        reader.setResource(new ClassPathResource("data/cuentas_anuales.csv"));
         reader.setLinesToSkip(1); // Skip header
         
         DefaultLineMapper<CuentaAnual> lineMapper = new DefaultLineMapper<>();
