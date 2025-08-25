@@ -113,12 +113,20 @@ public class BankBatchSpringBootApplication {
                                  JdbcTransactionManager transactionManager,
                                  ItemReader<Transaccion> transaccionReader,
                                  ItemProcessor<Transaccion, Transaccion> transaccionItemProcessor,
-                                 ItemWriter<Transaccion> transaccionWriter) {
+                                 ItemWriter<Transaccion> transaccionWriter,
+                                 org.springframework.retry.RetryPolicy transaccionesRetryPolicy,
+                                 org.springframework.batch.core.step.skip.SkipPolicy transaccionesSkipPolicy,
+                                 org.springframework.batch.core.StepExecutionListener faultToleranceListener) {
         return new StepBuilder("transaccionesStep", jobRepository)
                 .<Transaccion, Transaccion>chunk(10, transactionManager)
                 .reader(transaccionReader)
                 .processor(transaccionItemProcessor)
                 .writer(transaccionWriter)
+                // 🛡️ TOLERANCIA A FALLOS PARA TRANSACCIONES PRINCIPALES
+                .faultTolerant()
+                .retryPolicy(transaccionesRetryPolicy)
+                .skipPolicy(transaccionesSkipPolicy)
+                .listener(faultToleranceListener)
                 .build();
     }
 
@@ -137,12 +145,20 @@ public class BankBatchSpringBootApplication {
                              JdbcTransactionManager transactionManager,
                              ItemReader<Cuenta> cuentaReader,
                              ItemProcessor<Cuenta, Cuenta> interesesItemProcessor,
-                             ItemWriter<Cuenta> cuentaWriter) {
+                             ItemWriter<Cuenta> cuentaWriter,
+                             org.springframework.retry.RetryPolicy cuentasRetryPolicy,
+                             org.springframework.batch.core.step.skip.SkipPolicy cuentasSkipPolicy,
+                             org.springframework.batch.core.StepExecutionListener faultToleranceListener) {
         return new StepBuilder("interesesStep", jobRepository)
                 .<Cuenta, Cuenta>chunk(10, transactionManager)
                 .reader(cuentaReader)
                 .processor(interesesItemProcessor)
                 .writer(cuentaWriter)
+                // 🛡️ TOLERANCIA A FALLOS PARA CÁLCULO DE INTERESES
+                .faultTolerant()
+                .retryPolicy(cuentasRetryPolicy)     // Más conservador para cuentas
+                .skipPolicy(cuentasSkipPolicy)
+                .listener(faultToleranceListener)
                 .build();
     }
 
@@ -257,18 +273,20 @@ public class BankBatchSpringBootApplication {
                                                JdbcTransactionManager transactionManager,
                                                ItemReader<Transaccion> todasLasTransaccionesReader,
                                                ItemProcessor<Transaccion, java.util.List<AnomaliaTransaccion>> detectarAnomalíasLegacyProcessor,
-                                               org.springframework.batch.item.ItemWriter<java.util.List<AnomaliaTransaccion>> anomaliaListWriter) {
+                                               org.springframework.batch.item.ItemWriter<java.util.List<AnomaliaTransaccion>> anomaliaListWriter,
+                                               org.springframework.retry.RetryPolicy transaccionesRetryPolicy,
+                                               org.springframework.batch.core.step.skip.SkipPolicy transaccionesSkipPolicy,
+                                               org.springframework.batch.core.StepExecutionListener faultToleranceListener) {
         return new StepBuilder("deteccionAnomalíasAvanzadasStep", jobRepository)
                 .<Transaccion, java.util.List<AnomaliaTransaccion>>chunk(5, transactionManager)
                 .reader(todasLasTransaccionesReader)
                 .processor(detectarAnomalíasLegacyProcessor)
                 .writer(anomaliaListWriter)
-                // POLÍTICAS DE REINTENTO Y OMISIÓN
+                // 🛡️ POLÍTICAS PERSONALIZADAS DE TOLERANCIA A FALLOS
                 .faultTolerant()
-                .retry(RuntimeException.class)
-                .retryLimit(3) // Reintentar hasta 3 veces
-                .skip(Exception.class)
-                .skipLimit(5) // Saltar hasta 5 registros problemáticos
+                .retryPolicy(transaccionesRetryPolicy) // Política de reintento personalizada
+                .skipPolicy(transaccionesSkipPolicy)   // Política de omisión inteligente
+                .listener(faultToleranceListener)      // Monitoreo y logging avanzado
                 .build();
     }
 
@@ -285,18 +303,20 @@ public class BankBatchSpringBootApplication {
                                              JdbcTransactionManager transactionManager,
                                              ItemReader<Cuenta> todasLasCuentasReader,
                                              ItemProcessor<Cuenta, java.util.List<AnomaliaTransaccion>> detectarAnomaliasCuentasProcessor,
-                                             org.springframework.batch.item.ItemWriter<java.util.List<AnomaliaTransaccion>> anomaliaListWriter) {
+                                             org.springframework.batch.item.ItemWriter<java.util.List<AnomaliaTransaccion>> anomaliaListWriter,
+                                             org.springframework.retry.RetryPolicy cuentasRetryPolicy,
+                                             org.springframework.batch.core.step.skip.SkipPolicy cuentasSkipPolicy,
+                                             org.springframework.batch.core.StepExecutionListener faultToleranceListener) {
         return new StepBuilder("deteccionAnomalíasCuentasStep", jobRepository)
                 .<Cuenta, java.util.List<AnomaliaTransaccion>>chunk(5, transactionManager)
                 .reader(todasLasCuentasReader)
                 .processor(detectarAnomaliasCuentasProcessor)
                 .writer(anomaliaListWriter)
-                // POLÍTICAS DE REINTENTO Y OMISIÓN PARA CUENTAS
+                // 🛡️ POLÍTICAS PERSONALIZADAS PARA CUENTAS (MÁS ESTRICTAS)
                 .faultTolerant()
-                .retry(RuntimeException.class)
-                .retryLimit(2) // Menos reintentos para cuentas
-                .skip(Exception.class)
-                .skipLimit(3) // Saltar hasta 3 cuentas problemáticas
+                .retryPolicy(cuentasRetryPolicy)     // Reintentos más conservadores
+                .skipPolicy(cuentasSkipPolicy)       // Omisiones más estrictas
+                .listener(faultToleranceListener)    // Monitoreo detallado
                 .build();
     }
 
