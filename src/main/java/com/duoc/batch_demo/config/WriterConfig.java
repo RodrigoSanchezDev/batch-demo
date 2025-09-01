@@ -28,7 +28,9 @@ public class WriterConfig {
                     return provider.createSqlParameterSource(transaccion);
                 })
                 .sql("INSERT INTO transacciones (id, fecha, monto, tipo, fecha_procesamiento, es_anomalia, motivo_anomalia) " +
-                     "VALUES (:id, :fecha, :monto, :tipo, :fechaProcesamiento, :esAnomalia, :motivoAnomalia)")
+                     "VALUES (:id, :fecha, :monto, :tipo, :fechaProcesamiento, :esAnomalia, :motivoAnomalia) " +
+                     "ON DUPLICATE KEY UPDATE monto = :monto, tipo = :tipo, fecha_procesamiento = :fechaProcesamiento, " +
+                     "es_anomalia = :esAnomalia, motivo_anomalia = :motivoAnomalia")
                 .dataSource(dataSource)
                 .build();
     }

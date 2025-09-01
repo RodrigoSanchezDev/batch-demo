@@ -1,0 +1,288 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.duoc:batch-demo >-------------------------
+[INFO] Building batch-demo 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.5.4:run (default-cli) > test-compile @ batch-demo >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ batch-demo ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] Copying 20 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ batch-demo ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 27 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ batch-demo ---
+[INFO] skip non existing resourceDirectory /Users/rodrigosanchez/Library/Mobile Documents/com~apple~CloudDocs/DUOC/DESARROLLO BACKEND III/Semana 1/batch-demo/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ batch-demo ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] <<< spring-boot:3.5.4:run (default-cli) < test-compile @ batch-demo <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.5.4:run (default-cli) @ batch-demo ---
+[INFO] Attaching agents: []
+
+===== SISTEMA DE PROCESAMIENTO BANCARIO BATCH CON ESCALAMIENTO PARALELO Y PARTICIONES =====
+Iniciando procesamiento con 3 hilos paralelos, 4 particiones y chunks de tamaño 5...
+
+=== CONFIGURACIÓN DE ESCALAMIENTO PARALELO Y PARTICIONES ===
+   📊 Multi-threading: 3-6 hilos por job (lógica intensiva)
+   🧩 Particiones: 1 hilo coordinador por partición (distribución)
+   📦 Tamaño de chunks: 5 registros optimizado
+   🛡️  Tolerancia a fallos: Integrada
+   🎯 SEPARACIÓN DE RESPONSABILIDADES IMPLEMENTADA
+
+🎯 DATASET REAL CONFIGURADO (SEMANA 3 - 1000+ REGISTROS):
+   📁 Transacciones: data/semana_3/transacciones.csv (~1,000 registros)
+   📈 Monitoreo de rendimiento: Activo
+   🔄 Procesamiento distribuido: Habilitado
+===============================================================================
+
+
+===== SISTEMA DE PROCESAMIENTO BANCARIO BATCH CON ESCALAMIENTO PARALELO Y PARTICIONES =====
+Iniciando procesamiento con 3 hilos paralelos, 4 particiones y chunks de tamaño 5...
+
+=== CONFIGURACIÓN DE ESCALAMIENTO PARALELO Y PARTICIONES ===
+   📊 Multi-threading: 3-6 hilos por job (lógica intensiva)
+   🧩 Particiones: 1 hilo coordinador por partición (distribución)
+   📦 Tamaño de chunks: 5 registros optimizado
+   🛡️  Tolerancia a fallos: Integrada
+   🎯 SEPARACIÓN DE RESPONSABILIDADES IMPLEMENTADA
+
+🎯 DATASET REAL CONFIGURADO (SEMANA 3 - 1000+ REGISTROS):
+   📁 Transacciones: data/semana_3/transacciones.csv (~1,000 registros)
+   📈 Monitoreo de rendimiento: Activo
+   🔄 Procesamiento distribuido: Habilitado
+===============================================================================
+
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.4)
+
+2025-09-01T17:41:43.634-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] c.d.b.BankBatchSpringBootApplication     : Starting BankBatchSpringBootApplication using Java 17.0.16 with PID 42934 (/Users/rodrigosanchez/Library/Mobile Documents/com~apple~CloudDocs/DUOC/DESARROLLO BACKEND III/Semana 1/batch-demo/target/classes started by rodrigosanchez in /Users/rodrigosanchez/Library/Mobile Documents/com~apple~CloudDocs/DUOC/DESARROLLO BACKEND III/Semana 1/batch-demo)
+2025-09-01T17:41:43.635-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] c.d.b.BankBatchSpringBootApplication     : No active profile set, falling back to 1 default profile: "default"
+2025-09-01T17:41:43.646-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.devtools.restart.ChangeableUrls    : The Class-Path manifest attribute in /Users/rodrigosanchez/.m2/repository/com/oracle/database/jdbc/ojdbc11/23.7.0.25.01/ojdbc11-23.7.0.25.01.jar referenced one or more files that do not exist: file:/Users/rodrigosanchez/.m2/repository/com/oracle/database/jdbc/ojdbc11/23.7.0.25.01/oraclepki.jar
+2025-09-01T17:41:43.647-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-09-01T17:41:43.772-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.c.annotation.BatchRegistrar      : Finished Spring Batch infrastructure beans configuration in 0 ms.
+2025-09-01T17:41:43.829-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2025-09-01T17:41:43.835-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 4 ms. Found 0 JDBC repository interfaces.
+🚀 TRANSACCION READER CONFIGURADO PARA DATASET REAL:
+   📁 Archivo: data/semana_3/transacciones.csv
+   📊 Registros esperados: ~1,000 transacciones
+   🎯 Arquitectura híbrida ahora JUSTIFICADA
+🚀 CUENTA READER CONFIGURADO PARA DATASET REAL:
+   📁 Archivo: data/semana_3/intereses.csv
+   📊 Registros esperados: ~1,000 cuentas
+   🎯 Multi-threading ahora JUSTIFICADO
+🚀 CUENTA ANUAL READER CONFIGURADO PARA DATASET REAL:
+   📁 Archivo: data/semana_3/cuentas_anuales.csv
+   📊 Registros esperados: ~1,000 cuentas anuales
+   🎯 Particiones ahora JUSTIFICADAS
+TaskExecutor configurado:
+   Core Pool Size: 3 hilos paralelos
+   Max Pool Size: 5 hilos (escalamiento automático)
+   Queue Capacity: 50 tareas en cola
+   Chunk Size: 5 registros por chunk
+Transaction TaskExecutor configurado:
+   3 hilos paralelos estables
+   Cola optimizada: 30 transacciones
+   Política de consistencia aplicada
+Account TaskExecutor configurado:
+   3 hilos base + 1 escalamiento dinámico
+   Cola balanceada: 40 cuentas
+   Escalamiento automático bajo carga
+Anomaly TaskExecutor configurado:
+   3 hilos base + escalamiento hasta 6
+   Cola extendida: 60 registros
+   Alto rendimiento para detección
+🧩 Partition Coordinator TaskExecutor configurado:
+   1 hilo coordinador por partition
+   Máximo 4 particiones concurrentes
+   SIN procesamiento interno de datos
+   Estrategia: DISTRIBUCIÓN PURA
+Simple Async TaskExecutor configurado:
+   Límite de concurrencia: 3 hilos
+   Executor de fallback disponible
+Chunk Size Optimizado configurado:
+   Tamaño por chunk: 5 registros
+   Optimizado para 3 hilos paralelos
+   Balance rendimiento/memoria alcanzado
+2025-09-01T17:41:43.922-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-01T17:41:43.995-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@75178320
+2025-09-01T17:41:43.996-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-01T17:41:43.998-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.r.s.JobRepositoryFactoryBean     : No database type set, using meta data indicating: MYSQL
+=== CONFIGURANDO STEP TRANSACCIONES CON ESCALAMIENTO PARALELO ===
+   TaskExecutor: ThreadPoolTaskExecutor
+   Chunk Size: 5 registros
+   Hilos paralelos: 3
+   Tolerancia a fallos integrada
+2025-09-01T17:41:44.016-06:00  WARN 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.s.b.FaultTolerantStepBuilder     : Asynchronous TaskExecutor detected with ItemStream reader.  This is probably an error, and may lead to incorrect restart data being stored.
+=== CONFIGURANDO STEP INTERESES CON ESCALAMIENTO PARALELO ===
+   TaskExecutor: ThreadPoolTaskExecutor
+   Chunk Size: 5 registros
+   Hilos paralelos: 3 (escalamiento hasta 4)
+   Tolerancia a fallos para cuentas
+2025-09-01T17:41:44.033-06:00  WARN 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.s.b.FaultTolerantStepBuilder     : Asynchronous TaskExecutor detected with ItemStream reader.  This is probably an error, and may lead to incorrect restart data being stored.
+=== CONFIGURANDO DETECCIÓN ANOMALÍAS CON ESCALAMIENTO PARALELO ===
+   TaskExecutor: ThreadPoolTaskExecutor
+   Chunk Size: 5 registros
+   Hilos paralelos: 3 (escalamiento hasta 6)
+   Detección inteligente de anomalías
+2025-09-01T17:41:44.043-06:00  WARN 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.s.b.FaultTolerantStepBuilder     : Asynchronous TaskExecutor detected with ItemStream reader.  This is probably an error, and may lead to incorrect restart data being stored.
+⚙️  Configurando Worker Step para Transacciones Particionadas
+   • Chunk Size: 5
+   • Listener: PartitionPerformanceListener activo
+2025-09-01T17:41:44.052-06:00  WARN 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.AbstractListenerFactoryBean    : org.springframework.batch.item.ItemReader is an interface. The implementing class will not be queried for annotation based listener configurations. If using @StepScope on a @Bean method, be sure to return the implementing class so listener annotations can be used.
+🎯 Configurando Master Step para Transacciones Particionadas:
+   • Partitioner: BankDataPartitioner
+   • Handler: PartitionCoordinator (4 particiones)
+   • Worker: partitionedTransaccionWorkerStep (SIN multi-threading interno)
+   • Estrategia: DISTRIBUCIÓN PURA
+🔧 Configurando TransactionPartitionHandler:
+   • Particiones: 4
+   • TaskExecutor: transactionTaskExecutor
+   • Worker Step: partitionedTransaccionWorkerStep
+   • Estrategia: Distribución por rangos de ID
+
+🚀 CREANDO JOB PARTICIONADO: TRANSACCIONES DISTRIBUIDAS
+   📊 Estrategia: 4 particiones automáticas por rango de ID
+   🔄 TaskExecutor: partitionCoordinatorTaskExecutor (1 hilo por partition)
+   🎯 Procesamiento: SECUENCIAL dentro de cada partición
+   📈 Escalabilidad: Distribución geográfica/temporal
+⚙️  Configurando Worker Step para Cuentas Particionadas
+2025-09-01T17:41:44.054-06:00  WARN 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.AbstractListenerFactoryBean    : org.springframework.batch.item.ItemReader is an interface. The implementing class will not be queried for annotation based listener configurations. If using @StepScope on a @Bean method, be sure to return the implementing class so listener annotations can be used.
+🎯 Configurando Master Step para Cuentas Particionadas:
+   • Handler: PartitionCoordinator (3 particiones)
+   • Estrategia: DISTRIBUCIÓN PURA SIN multi-threading interno
+🔧 Configurando AccountPartitionHandler:
+   • Particiones: 3
+   • TaskExecutor: accountTaskExecutor
+   • Worker Step: partitionedCuentaWorkerStep
+   • Escalamiento: Dinámico
+🚀 CREANDO JOB PARTICIONADO: CUENTAS ANUALES DISTRIBUIDAS
+   ⚙️ Sistema de Particiones Activo
+   📊 Distribución: 3 Particiones (SIN multi-threading interno)
+   🎯 Estrategia: DISTRIBUCIÓN GEOGRÁFICA O TEMPORAL
+   💾 Escalable para millones de registros
+   -------------------------------------------
+🚨 Configurando Worker Step para Anomalías Particionadas
+2025-09-01T17:41:44.056-06:00  WARN 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.AbstractListenerFactoryBean    : org.springframework.batch.item.ItemReader is an interface. The implementing class will not be queried for annotation based listener configurations. If using @StepScope on a @Bean method, be sure to return the implementing class so listener annotations can be used.
+🎯 Configurando Master Step para Anomalías Particionadas:
+   • Handler: PartitionCoordinator (6 particiones)
+   • Estrategia: DISTRIBUCIÓN POR TIPO DE ANOMALÍA
+🔧 Configurando AnomalyPartitionHandler:
+   • Particiones: 6
+   • TaskExecutor: anomalyTaskExecutor
+   • Worker Step: partitionedAnomaliaWorkerStep
+   • Rendimiento: Máximo paralelismo
+🚀 CREANDO JOB PARTICIONADO: DETECCIÓN DE ANOMALÍAS AVANZADA
+   🚨 Sistema de Detección Distribuido
+   📊 Distribución: 6 Particiones (SIN multi-threading interno)
+   🎯 Estrategia: DISTRIBUCIÓN POR TIPO DE ANOMALÍA
+   🔍 Escalable para análisis masivos de transacciones
+   -------------------------------------------
+2025-09-01T17:41:44.057-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : No TaskExecutor has been set, defaulting to synchronous executor.
+2025-09-01T17:41:44.135-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-09-01T17:41:44.153-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] c.d.b.BankBatchSpringBootApplication     : Started BankBatchSpringBootApplication in 0.628 seconds (process running for 0.732)
+=== EJECUTANDO JOB 1: REPORTE DE TRANSACCIONES DIARIAS ===
+2025-09-01T17:41:44.186-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=reporteTransaccionesJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.196-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=257, version=7, name=transaccionesStep, status=COMPLETED, exitStatus=COMPLETED, readCount=10, filterCount=0, writeCount=10 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=5, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.199-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=reporteTransaccionesJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 7ms
+=== EJECUTANDO PROCESAMIENTO DE ANOMALÍAS ===
+2025-09-01T17:41:44.208-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=anomaliasJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.213-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=258, version=3, name=anomaliasStep, status=COMPLETED, exitStatus=COMPLETED, readCount=1, filterCount=0, writeCount=1 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=1, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.215-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=anomaliasJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 4ms
+
+=== EJECUTANDO JOB 2: CÁLCULO DE INTERESES MENSUALES ===
+2025-09-01T17:41:44.223-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=calculoInteresesJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.227-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=259, version=7, name=interesesStep, status=COMPLETED, exitStatus=COMPLETED, readCount=8, filterCount=0, writeCount=8 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=5, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.229-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=calculoInteresesJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 4ms
+=== EJECUTANDO GUARDADO DE DETALLES DE INTERESES ===
+2025-09-01T17:41:44.238-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=interesesDetalleJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.242-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=260, version=3, name=interesesDetalleStep, status=COMPLETED, exitStatus=COMPLETED, readCount=8, filterCount=0, writeCount=8 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=1, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.244-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=interesesDetalleJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 3ms
+
+=== EJECUTANDO JOB 3: GENERACIÓN DE ESTADOS DE CUENTA ANUALES ===
+2025-09-01T17:41:44.251-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=estadosCuentaAnualesJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.254-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=261, version=3, name=cuentasAnualesStep, status=COMPLETED, exitStatus=COMPLETED, readCount=9, filterCount=0, writeCount=9 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=1, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.256-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=estadosCuentaAnualesJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 3ms
+=== EJECUTANDO PROCESAMIENTO DE ESTADOS DETALLADOS ===
+2025-09-01T17:41:44.262-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=estadosDetalleJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.264-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=262, version=3, name=estadosDetalleStep, status=COMPLETED, exitStatus=COMPLETED, readCount=9, filterCount=0, writeCount=9 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=1, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.266-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=estadosDetalleJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 2ms
+
+=== EJECUTANDO DETECCIÓN AVANZADA DE ANOMALÍAS EN TRANSACCIONES ===
+2025-09-01T17:41:44.272-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=deteccionAnomalíasAvanzadasJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.275-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=281, version=7, name=deteccionAnomalíasAvanzadasStep, status=COMPLETED, exitStatus=COMPLETED, readCount=0, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=5, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.277-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=deteccionAnomalíasAvanzadasJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 2ms
+
+=== EJECUTANDO DETECCIÓN DE DUPLICADOS Y ANOMALÍAS EN CUENTAS ===
+2025-09-01T17:41:44.282-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=deteccionAnomalíasCuentasJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.285-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=264, version=4, name=deteccionAnomalíasCuentasStep, status=COMPLETED, exitStatus=COMPLETED, readCount=8, filterCount=7, writeCount=1 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=2, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.286-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=deteccionAnomalíasCuentasJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 2ms
+
+=== 🧩 EJECUTANDO JOBS PARTICIONADOS PARA DEMOSTRAR PARTICIONES ===
+
+=== EJECUTANDO JOB PARTICIONADO: TRANSACCIONES DISTRIBUIDAS ===
+2025-09-01T17:41:44.291-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=particionesTransaccionesJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.294-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=265, version=2, name=partitionedTransaccionMasterStep, status=COMPLETED, exitStatus=COMPLETED, readCount=10, filterCount=0, writeCount=10 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=6, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.295-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=particionesTransaccionesJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 2ms
+
+=== EJECUTANDO JOB PARTICIONADO: CUENTAS ANUALES DISTRIBUIDAS ===
+2025-09-01T17:41:44.300-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=particionesCuentasJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.304-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=270, version=2, name=partitionedCuentaMasterStep, status=COMPLETED, exitStatus=COMPLETED, readCount=0, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=3, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.305-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=particionesCuentasJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 3ms
+
+=== EJECUTANDO JOB PARTICIONADO: DETECCIÓN DE ANOMALÍAS AVANZADA ===
+2025-09-01T17:41:44.310-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=particionesAnomaliasJob]] launched with the following parameters: [{}]
+2025-09-01T17:41:44.312-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.batch.core.job.SimpleStepHandler     : Step already complete or not restartable, so no action to execute: StepExecution: id=274, version=2, name=partitionedAnomaliaMasterStep, status=COMPLETED, exitStatus=COMPLETED, readCount=10, filterCount=8, writeCount=2 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=9, rollbackCount=0, exitDescription=
+2025-09-01T17:41:44.313-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] o.s.b.c.l.s.TaskExecutorJobLauncher      : Job: [SimpleJob: [name=particionesAnomaliasJob]] completed with the following parameters: [{}] and the following status: [COMPLETED] in 2ms
+
+===== PROCESAMIENTO BANCARIO PARALELO Y PARTICIONADO COMPLETADO EXITOSAMENTE =====
+Todos los datos han sido procesados con escalamiento paralelo y particiones en base de datos.
+
+📊 RESUMEN DE ESCALAMIENTO Y PARTICIONES:
+   🚀 3 hilos de ejecución paralela utilizados
+   🧩 4 particiones automáticas configuradas por job particionado
+   📦 Chunks de tamaño 25 procesados eficientemente
+   🛡️  Tolerancia a fallos aplicada en todos los steps
+   📈 Métricas de rendimiento capturadas
+   🔄 Procesamiento distribuido habilitado
+
+🎯 SISTEMA DE DETECCIÓN AVANZADA DE ANOMALÍAS (Paralelo + Particionado):
+   💰 Montos negativos y cero detectados en paralelo
+   🔍 Tipos de transacción inválidos identificados concurrentemente
+   📋 Registros duplicados encontrados con múltiples threads
+   🎂 Edades fuera de rango detectadas paralelamente
+   ❓ Datos faltantes identificados con escalamiento
+
+🗄️  BASE DE DATOS:
+   Conectar a la base de datos para revisar los resultados del procesamiento.
+   📋 Tablas: transacciones, cuentas, cuentas_anuales,
+            intereses_calculados, anomalias_transacciones, estados_cuenta_anuales
+   📊 Logs de escalamiento y particiones disponibles arriba para análisis.
+
+✅ Aplicación completada. Los datos permanecen en base de datos para revisión.
+🧩 Sistema con particiones implementado exitosamente.
+
+🔄 Cerrando aplicación automáticamente en 3 segundos...
+2025-09-01T17:41:47.318-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-01T17:41:47.321-06:00  INFO 42934 --- [banco-batch-demo] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.175 s
+[INFO] Finished at: 2025-09-01T17:41:47-06:00
+[INFO] ------------------------------------------------------------------------

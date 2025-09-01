@@ -3,44 +3,118 @@ package com.duoc.batch_demo.config;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
-import javax.sql.DataSource;
-
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.item.support.CompositeItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import com.duoc.batch_demo.model.Cuenta;
 import com.duoc.batch_demo.model.CuentaAnual;
 import com.duoc.batch_demo.model.Transaccion;
 
+/**
+ * Configuración de readers que procesan TODAS las semanas (1, 2 y 3)
+ * para demostrar escalabilidad con volúmenes reales.
+ */
 @Configuration
-public class ReaderConfig {
+public class MultiWeekReaderConfig {
 
+    /**
+     * Reader compuesto que procesa transacciones de TODAS las semanas.
+     * Total esperado: ~3,000 registros de las 3 semanas.
+     */
     @Bean
-    public FlatFileItemReader<Transaccion> transaccionReader() {
-        FlatFileItemReader<Transaccion> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("data/semana_3/transacciones.csv")); // Usando dataset REAL con 1000+ registros
-        reader.setLinesToSkip(1); // Skip header
+    @Primary
+    public CompositeItemReader<Transaccion> multiWeekTransaccionReader() {
+        CompositeItemReader<Transaccion> compositeReader = new CompositeItemReader<Transaccion>();
         
-        System.out.println("🚀 TRANSACCION READER CONFIGURADO PARA DATASET REAL:");
-        System.out.println("   📁 Archivo: data/semana_3/transacciones.csv");
-        System.out.println("   📊 Registros esperados: ~1,000 transacciones");
-        System.out.println("   🎯 Arquitectura híbrida ahora JUSTIFICADA");
+        List<FlatFileItemReader<Transaccion>> readers = Arrays.asList(
+            createTransaccionReader("data/transacciones.csv"),
+            createTransaccionReader("data/semana_2/transacciones.csv"),
+            createTransaccionReader("data/semana_3/transacciones.csv")
+        );
+        
+        compositeReader.setDelegates(readers);
+        
+        System.out.println("🚀 MULTI-WEEK TRANSACCION READER CONFIGURADO:");
+        System.out.println("   📁 Semana 1: data/transacciones.csv");
+        System.out.println("   📁 Semana 2: data/semana_2/transacciones.csv");  
+        System.out.println("   📁 Semana 3: data/semana_3/transacciones.csv");
+        System.out.println("   📊 Total estimado: ~3,000 registros");
+        
+        return compositeReader;
+    }
+
+    /**
+     * Reader compuesto que procesa cuentas de TODAS las semanas.
+     * Total esperado: ~3,000 registros de las 3 semanas.
+     */
+    @Bean
+    @Primary
+    public CompositeItemReader<Cuenta> multiWeekCuentaReader() {
+        CompositeItemReader<Cuenta> compositeReader = new CompositeItemReader<Cuenta>();
+        
+        List<FlatFileItemReader<Cuenta>> readers = Arrays.asList(
+            createCuentaReader("data/intereses.csv"),
+            createCuentaReader("data/semana_2/intereses.csv"),
+            createCuentaReader("data/semana_3/intereses.csv")
+        );
+        
+        compositeReader.setDelegates(readers);
+        
+        System.out.println("🚀 MULTI-WEEK CUENTA READER CONFIGURADO:");
+        System.out.println("   📁 Semana 1: data/intereses.csv");
+        System.out.println("   📁 Semana 2: data/semana_2/intereses.csv");
+        System.out.println("   📁 Semana 3: data/semana_3/intereses.csv");
+        System.out.println("   📊 Total estimado: ~3,000 registros");
+        
+        return compositeReader;
+    }
+
+    /**
+     * Reader compuesto que procesa cuentas anuales de TODAS las semanas.
+     * Total esperado: ~3,000 registros de las 3 semanas.
+     */
+    @Bean
+    @Primary  
+    public CompositeItemReader<CuentaAnual> multiWeekCuentaAnualReader() {
+        CompositeItemReader<CuentaAnual> compositeReader = new CompositeItemReader<CuentaAnual>();
+        
+        List<FlatFileItemReader<CuentaAnual>> readers = Arrays.asList(
+            createCuentaAnualReader("data/cuentas_anuales.csv"),
+            createCuentaAnualReader("data/semana_2/cuentas_anuales.csv"),
+            createCuentaAnualReader("data/semana_3/cuentas_anuales.csv")
+        );
+        
+        compositeReader.setDelegates(readers);
+        
+        System.out.println("🚀 MULTI-WEEK CUENTA ANUAL READER CONFIGURADO:");
+        System.out.println("   📁 Semana 1: data/cuentas_anuales.csv");
+        System.out.println("   📁 Semana 2: data/semana_2/cuentas_anuales.csv");
+        System.out.println("   📁 Semana 3: data/semana_3/cuentas_anuales.csv");
+        System.out.println("   📊 Total estimado: ~3,000 registros");
+        
+        return compositeReader;
+    }
+
+    // Métodos de utilidad para crear readers individuales
+    private FlatFileItemReader<Transaccion> createTransaccionReader(String resourcePath) {
+        FlatFileItemReader<Transaccion> reader = new FlatFileItemReader<>();
+        reader.setResource(new ClassPathResource(resourcePath));
+        reader.setLinesToSkip(1);
         
         DefaultLineMapper<Transaccion> lineMapper = new DefaultLineMapper<>();
-        
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
         tokenizer.setNames("id", "fecha", "monto", "tipo");
         
-        // Mapper personalizado para manejar conversiones de tipos
         BeanWrapperFieldSetMapper<Transaccion> fieldSetMapper = new BeanWrapperFieldSetMapper<>() {
             @Override
             public Transaccion mapFieldSet(org.springframework.batch.item.file.transform.FieldSet fieldSet) {
@@ -75,32 +149,24 @@ public class ReaderConfig {
                 return transaccion;
             }
         };
-        fieldSetMapper.setTargetType(Transaccion.class);
         
+        fieldSetMapper.setTargetType(Transaccion.class);
         lineMapper.setLineTokenizer(tokenizer);
         lineMapper.setFieldSetMapper(fieldSetMapper);
-        
         reader.setLineMapper(lineMapper);
+        
         return reader;
     }
 
-    @Bean
-    public FlatFileItemReader<Cuenta> cuentaReader() {
+    private FlatFileItemReader<Cuenta> createCuentaReader(String resourcePath) {
         FlatFileItemReader<Cuenta> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("data/semana_3/intereses.csv")); // Usando dataset REAL con 1000+ registros
-        reader.setLinesToSkip(1); // Skip header
-        
-        System.out.println("🚀 CUENTA READER CONFIGURADO PARA DATASET REAL:");
-        System.out.println("   📁 Archivo: data/semana_3/intereses.csv");
-        System.out.println("   📊 Registros esperados: ~1,000 cuentas");
-        System.out.println("   🎯 Multi-threading ahora JUSTIFICADO");
+        reader.setResource(new ClassPathResource(resourcePath));
+        reader.setLinesToSkip(1);
         
         DefaultLineMapper<Cuenta> lineMapper = new DefaultLineMapper<>();
-        
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
         tokenizer.setNames("cuenta_id", "nombre", "saldo", "edad", "tipo");
         
-        // Mapper personalizado para manejar conversiones de tipos
         BeanWrapperFieldSetMapper<Cuenta> fieldSetMapper = new BeanWrapperFieldSetMapper<>() {
             @Override
             public Cuenta mapFieldSet(org.springframework.batch.item.file.transform.FieldSet fieldSet) {
@@ -139,32 +205,24 @@ public class ReaderConfig {
                 return cuenta;
             }
         };
-        fieldSetMapper.setTargetType(Cuenta.class);
         
+        fieldSetMapper.setTargetType(Cuenta.class);
         lineMapper.setLineTokenizer(tokenizer);
         lineMapper.setFieldSetMapper(fieldSetMapper);
-        
         reader.setLineMapper(lineMapper);
+        
         return reader;
     }
 
-    @Bean
-    public FlatFileItemReader<CuentaAnual> cuentaAnualReader() {
+    private FlatFileItemReader<CuentaAnual> createCuentaAnualReader(String resourcePath) {
         FlatFileItemReader<CuentaAnual> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("data/semana_3/cuentas_anuales.csv")); // Usando dataset REAL con 1000+ registros
-        reader.setLinesToSkip(1); // Skip header
-        
-        System.out.println("🚀 CUENTA ANUAL READER CONFIGURADO PARA DATASET REAL:");
-        System.out.println("   📁 Archivo: data/semana_3/cuentas_anuales.csv");
-        System.out.println("   📊 Registros esperados: ~1,000 cuentas anuales");
-        System.out.println("   🎯 Particiones ahora JUSTIFICADAS");
+        reader.setResource(new ClassPathResource(resourcePath));
+        reader.setLinesToSkip(1);
         
         DefaultLineMapper<CuentaAnual> lineMapper = new DefaultLineMapper<>();
-        
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
         tokenizer.setNames("cuenta_id", "fecha", "transaccion", "monto", "descripcion");
         
-        // Mapper personalizado para manejar conversiones de tipos
         BeanWrapperFieldSetMapper<CuentaAnual> fieldSetMapper = new BeanWrapperFieldSetMapper<>() {
             @Override
             public CuentaAnual mapFieldSet(org.springframework.batch.item.file.transform.FieldSet fieldSet) {
@@ -202,90 +260,11 @@ public class ReaderConfig {
                 return cuentaAnual;
             }
         };
-        fieldSetMapper.setTargetType(CuentaAnual.class);
         
+        fieldSetMapper.setTargetType(CuentaAnual.class);
         lineMapper.setLineTokenizer(tokenizer);
         lineMapper.setFieldSetMapper(fieldSetMapper);
-        
         reader.setLineMapper(lineMapper);
-        return reader;
-    }
-
-    // Reader específico para anomalías - Lee transacciones desde la base de datos
-    @Bean
-    public JdbcCursorItemReader<Transaccion> anomaliaTransaccionReader(DataSource dataSource) {
-        return new JdbcCursorItemReaderBuilder<Transaccion>()
-                .name("anomaliaTransaccionReader")
-                .dataSource(dataSource)
-                .sql("SELECT id, fecha, monto, tipo, fecha_procesamiento, es_anomalia, motivo_anomalia " +
-                     "FROM transacciones WHERE es_anomalia = true")
-                .rowMapper(new BeanPropertyRowMapper<>(Transaccion.class))
-                .build();
-    }
-    
-    // Reader especializado para detectar TODAS las anomalías (no solo las marcadas)
-    @Bean 
-    public JdbcCursorItemReader<Transaccion> todasLasTransaccionesReader(DataSource dataSource) {
-        JdbcCursorItemReader<Transaccion> reader = new JdbcCursorItemReader<>();
-        reader.setDataSource(dataSource);
-        reader.setSql("SELECT id, fecha, monto, tipo, fecha_procesamiento, es_anomalia, motivo_anomalia FROM transacciones ORDER BY id");
-        
-        reader.setRowMapper(new org.springframework.jdbc.core.RowMapper<Transaccion>() {
-            @Override
-            public Transaccion mapRow(java.sql.ResultSet rs, int rowNum) throws java.sql.SQLException {
-                Transaccion transaccion = new Transaccion();
-                transaccion.setId(rs.getLong("id"));
-                
-                // Manejar fecha de manera segura
-                java.sql.Date sqlDate = rs.getDate("fecha");
-                if (sqlDate != null) {
-                    transaccion.setFecha(sqlDate.toLocalDate());
-                }
-                
-                transaccion.setMonto(rs.getBigDecimal("monto"));
-                transaccion.setTipo(rs.getString("tipo"));
-                
-                // Campos adicionales
-                java.sql.Timestamp timestamp = rs.getTimestamp("fecha_procesamiento");
-                if (timestamp != null) {
-                    transaccion.setFechaProcesamiento(timestamp.toLocalDateTime());
-                }
-                
-                transaccion.setEsAnomalia(rs.getBoolean("es_anomalia"));
-                transaccion.setMotivoAnomalia(rs.getString("motivo_anomalia"));
-                
-                return transaccion;
-            }
-        });
-        
-        return reader;
-    }
-
-    // Reader especializado para detectar registros duplicados en cuentas
-    @Bean
-    public JdbcCursorItemReader<Cuenta> todasLasCuentasReader(DataSource dataSource) {
-        JdbcCursorItemReader<Cuenta> reader = new JdbcCursorItemReader<>();
-        reader.setDataSource(dataSource);
-        reader.setSql("SELECT cuenta_id, nombre, saldo, edad, tipo, fecha_actualizacion FROM cuentas ORDER BY cuenta_id");
-        
-        reader.setRowMapper(new org.springframework.jdbc.core.RowMapper<Cuenta>() {
-            @Override
-            public Cuenta mapRow(java.sql.ResultSet rs, int rowNum) throws java.sql.SQLException {
-                Cuenta cuenta = new Cuenta();
-                cuenta.setCuentaId(rs.getLong("cuenta_id"));
-                cuenta.setNombre(rs.getString("nombre"));
-                cuenta.setSaldo(rs.getBigDecimal("saldo"));
-                cuenta.setEdad(rs.getInt("edad"));
-                cuenta.setTipo(rs.getString("tipo"));
-                
-                java.sql.Timestamp timestamp = rs.getTimestamp("fecha_actualizacion");
-                if (timestamp != null) {
-                    cuenta.setFechaActualizacion(timestamp.toLocalDateTime());
-                }
-                
-                return cuenta;
-            }
-        });
         
         return reader;
     }

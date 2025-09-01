@@ -140,6 +140,36 @@ public class ScalingPolicyConfig {
     }
 
     /**
+     * TaskExecutor simplificado para coordinación de particiones.
+     * NO procesa datos internamente, solo coordina la distribución.
+     */
+    @Bean(name = "partitionCoordinatorTaskExecutor")
+    public TaskExecutor partitionCoordinatorTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        
+        // Configuración minimalista para coordinación
+        executor.setCorePoolSize(1);           // 1 hilo coordinador por partition
+        executor.setMaxPoolSize(4);            // Máximo 4 particiones concurrentes
+        executor.setQueueCapacity(10);         // Cola pequeña para coordinación
+        executor.setKeepAliveSeconds(30);
+        
+        executor.setThreadNamePrefix("Partition-Coordinator-");
+        executor.setRejectedExecutionHandler(new java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy());
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(60);
+        
+        executor.initialize();
+        
+        System.out.println("🧩 Partition Coordinator TaskExecutor configurado:");
+        System.out.println("   1 hilo coordinador por partition");
+        System.out.println("   Máximo 4 particiones concurrentes");
+        System.out.println("   SIN procesamiento interno de datos");
+        System.out.println("   Estrategia: DISTRIBUCIÓN PURA");
+        
+        return executor;
+    }
+
+    /**
      * Simple AsyncTaskExecutor como fallback para tareas básicas.
      * Executor ligero para operaciones que no requieren pool complejo.
      */
