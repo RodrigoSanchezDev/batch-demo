@@ -725,7 +725,7 @@ HIPOTECA   → Montos altos, validación especial
 ```
 
 ### 📊 Resultado Esperado con Escalamiento Paralelo y Particiones
-![Resumen de Ejecución Paralela](docs/images/resumen-ejecucion-paralela.png)
+![Resumen de Ejecución Paralela](docs/images/resumen-ejecucion.png)
 
 ### 🧩 Verificación de Particiones Implementadas
 ![Análisis de Particiones](docs/images/analisis-particiones.png)
