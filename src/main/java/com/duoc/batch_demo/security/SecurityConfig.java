@@ -37,34 +37,34 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // Configuración CORS
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            
             // Deshabilitar CSRF para APIs REST
             .csrf(csrf -> csrf.disable())
+            
+            // Configuración CORS
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             
             // Configuración de sesiones stateless
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
-            // Configuración de autorización por rutas específicas para BFFs
+            // Configuración de autorización por endpoints
             .authorizeHttpRequests(authz -> authz
-                // Rutas públicas - NO requieren autenticación
-                .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
-                
-                // Endpoints de autenticación BFF - NO requieren autenticación previa
+                // Rutas públicas (no requieren autenticación)
                 .requestMatchers("/api/web/auth/login").permitAll()
                 .requestMatchers("/api/mobile/auth/login").permitAll()
                 .requestMatchers("/api/atm/auth/validate-card").permitAll()
+                .requestMatchers("/api/atm/auth/validate-pin").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
                 
-                // Endpoints BFF protegidos - requieren autenticación JWT
-                .requestMatchers("/api/web/**").authenticated()
-                .requestMatchers("/api/mobile/**").authenticated()
-                .requestMatchers("/api/atm/**").authenticated()
+                // Rutas protegidas - requieren JWT válido y rol específico
+                .requestMatchers("/api/web/**").hasRole("WEB")
+                .requestMatchers("/api/mobile/**").hasRole("MOBILE")
+                .requestMatchers("/api/atm/**").hasRole("ATM")
                 
-                // Otras rutas por defecto son permitidas (esto evita bloquear recursos estáticos)
-                .anyRequest().permitAll()
+                // Otras rutas por defecto requieren autenticación
+                .anyRequest().authenticated()
             )
             
             // Configuración de manejo de excepciones de autenticación
@@ -81,17 +81,11 @@ public class SecurityConfig {
                 })
             )
             
-            // Agregar filtro JWT antes del filtro de autenticación estándar
+            // Añadir filtro JWT antes del filtro de autenticación estándar
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             
-            // Configuración de headers de seguridad
-            .headers(headers -> headers
-                .frameOptions(frameOptions -> frameOptions.deny())
-                .contentTypeOptions(contentTypeOptions -> {})
-                .httpStrictTransportSecurity(hstsConfig -> hstsConfig
-                    .maxAgeInSeconds(31536000)
-                )
-            );
+            // Permitir frames para H2 console
+            .headers(headers -> headers.frameOptions(frameoptions -> frameoptions.sameOrigin()));
 
         return http.build();
     }

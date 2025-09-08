@@ -61,8 +61,8 @@ echo "--------------------------------------------------"
 
 MOBILE_TOKEN=$(curl -s -X POST "http://localhost:8080/api/mobile/auth/login" \
     -H "Content-Type: application/json" \
-    -d '{"username": "user1", "password": "mobile123", "dispositivo": "iPhone13", "version": "1.2.3"}' | \
-    grep -o '"access_token":"[^"]*' | cut -d'"' -f4)
+    -d '{"username": "demo", "password": "demo123", "deviceId": "test-device-123"}' | \
+    grep -o '"token":"[^"]*' | cut -d'"' -f4)
 
 if [ -n "$MOBILE_TOKEN" ]; then
     echo "✅ Autenticación Mobile exitosa!"
@@ -81,6 +81,7 @@ echo "--------------------------------------------------"
 
 curl -s -X GET "http://localhost:8080/api/mobile/transacciones/recientes?limite=3" \
     -H "Authorization: Bearer $MOBILE_TOKEN" \
+    -H "Device-ID: test-device-123" \
     -H "Content-Type: application/json"
 
 echo ""
@@ -95,7 +96,7 @@ echo "--------------------------------------------------"
 
 ATM_TEMP_SESSION=$(curl -s -X POST "http://localhost:8080/api/atm/auth/validate-card" \
     -H "Content-Type: application/json" \
-    -d '{"cardNumber": "4532123456789012", "atmId": "ATM-001234", "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}' | \
+    -d '{"cardNumber": "4111111111111111", "atmId": "ATM-000001", "location": "Sucursal Centro"}' | \
     grep -o '"temp_session":"[^"]*' | cut -d'"' -f4)
 
 if [ -n "$ATM_TEMP_SESSION" ]; then
@@ -109,8 +110,8 @@ if [ -n "$ATM_TEMP_SESSION" ]; then
     
     ATM_TOKEN=$(curl -s -X POST "http://localhost:8080/api/atm/auth/validate-pin" \
         -H "Content-Type: application/json" \
-        -d '{"cardNumber": "4532123456789012", "pin": "1234", "atmId": "ATM-001234", "tempSession": "'$ATM_TEMP_SESSION'"}' | \
-        grep -o '"access_token":"[^"]*' | cut -d'"' -f4)
+        -d '{"cardNumber": "4111111111111111", "pin": "1234", "atmId": "ATM-000001", "tempSession": "'$ATM_TEMP_SESSION'"}' | \
+        grep -o '"session_token":"[^"]*' | cut -d'"' -f4)
     
     if [ -n "$ATM_TOKEN" ]; then
         echo "✅ Validación de PIN exitosa!"
@@ -131,8 +132,10 @@ echo ""
 echo "🏧 PRUEBA 6: BFF ATM - Consulta de Saldo"
 echo "--------------------------------------------------"
 
-curl -s -X GET "http://localhost:8080/api/atm/saldo" \
+curl -s -X GET "http://localhost:8080/api/atm/operaciones/saldo/1234" \
     -H "Authorization: Bearer $ATM_TOKEN" \
+    -H "ATM-ID: ATM-000001" \
+    -H "Session-ID: cc35cb3e-2445-4011-86f4-9312827820c8" \
     -H "Content-Type: application/json"
 
 echo ""

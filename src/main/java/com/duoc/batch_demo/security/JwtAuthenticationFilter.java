@@ -1,7 +1,8 @@
 package com.duoc.batch_demo.security;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -71,11 +72,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Si el token es válido, establecer autenticación
             if (isValidToken) {
+                // Crear authorities: ROLE_CLIENT_TYPE + rol del usuario
+                List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                
+                // Agregar rol basado en el tipo de cliente (para @PreAuthorize en controladores)
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + clientType));
+                
+                // Agregar rol del usuario si existe en el token (para permisos más granulares)
+                String userRole = jwtTokenUtil.getRoleFromToken(jwtToken);
+                if (userRole != null && !userRole.isEmpty()) {
+                    authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole));
+                }
+                
                 UsernamePasswordAuthenticationToken authToken = 
                     new UsernamePasswordAuthenticationToken(
                         username, 
                         null, 
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + clientType))
+                        authorities
                     );
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }

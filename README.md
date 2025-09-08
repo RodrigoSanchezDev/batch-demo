@@ -1,4 +1,4 @@
-# 🏦 Sistema de Procesamiento Bancario Batch con Arquitectura Híbrida: Multi-Threading + Partitioning
+# 🏦 Sistema Bancario Empresarial con Arquitectura BFF y Procesamiento Batch Híbrido
 
 ## 🏗️ Arquitectura Híbrida Justificada
 
@@ -77,10 +77,202 @@ Esta separación evita el **anti-patrón** de usar ambas técnicas para el mismo
 - ⚡ **Tiempo Promedio**: 33ms por job (eficiencia optimizada)
 - 🔧 **Separación Perfecta**: Cero conflictos entre patrones arquitecturales
 
-Un sistema empresarial de procesamiento por lotes (batch) desarrollado en Spring Boot que automatiza el procesamiento de datos bancarios legacy con **arquitectura híbrida Multi-Threading + Partitioning**, detecta anomalías automáticamente y genera reportes financieros completos con **políticas personalizadas de tolerancia a fallos** y **separación clara de responsabilidades**.
+Un sistema empresarial completo desarrollado en Spring Boot que combina **arquitectura Backend-for-Frontend (BFF)** para diferentes tipos de clientes con **procesamiento por lotes (batch) híbrido Multi-Threading + Partitioning**. El sistema automatiza el procesamiento de datos bancarios legacy, proporciona APIs diferenciadas por canal de acceso, implementa autenticación JWT robusta y genera reportes financieros completos con **políticas personalizadas de tolerancia a fallos**.
 
-**🎯 Para quién:** Instituciones financieras que necesitan procesar grandes volúmenes de datos con técnicas diferenciadas según el tipo de procesamiento requerido.  
-**⚡ Qué resuelve:** Procesamiento híbrido inteligente donde Multi-Threading maneja lógica intensiva (3-6 threads paralelos) y Partitioning distribuye datos masivos (1-4 particiones independientes), con chunks optimizados, tolerancia a fallos y monitoreo especializado.
+**🎯 Para quién:** Instituciones financieras que necesitan tanto APIs diferenciadas por canal (Web, Móvil, ATM) como procesamiento masivo de datos con técnicas híbridas según el tipo de operación requerida.  
+**⚡ Qué resuelve:** 
+- **Frontend**: APIs BFF optimizadas donde cada canal (Web, Móvil, ATM) tiene endpoints especializados con autenticación JWT diferenciada, datos personalizados y niveles de seguridad específicos
+- **Backend**: Procesamiento híbrido inteligente donde Multi-Threading maneja lógica intensiva (3-6 threads paralelos) y Partitioning distribuye datos masivos (1-4 particiones independientes), con chunks optimizados, tolerancia a fallos y monitoreo especializado
+
+## 🎯 **Arquitectura Dual: BFF + Batch Processing**
+
+### 🌐 **Frontend - Backend for Frontend (BFF)**
+Sistema de APIs diferenciadas por canal con autenticación JWT robusta y datos optimizados para cada tipo de cliente:
+
+- **🌐 BFF Web**: APIs completas para navegadores con datos extensos, filtros avanzados y funcionalidades administrativas
+- **📱 BFF Mobile**: APIs ligeras para dispositivos móviles con datos comprimidos, cache agresivo y notificaciones push  
+- **🏧 BFF ATM**: APIs ultra-seguras para cajeros automáticos con validaciones estrictas, auditoría completa y timeouts cortos
+
+### ⚙️ **Backend - Procesamiento Batch Híbrido**
+Procesamiento masivo de datos bancarios con arquitectura híbrida justificada técnicamente:
+
+---
+
+## 🌐 Sistema Backend-for-Frontend (BFF)
+
+### 🎯 **Justificación de la Arquitectura BFF**
+
+Este proyecto implementa un **patrón Backend-for-Frontend (BFF)** diferenciado para optimizar la experiencia de usuario según el canal de acceso. La decisión arquitectural se basó en:
+
+1. **Diversidad de Clientes**: Web, Móvil y ATM tienen necesidades completamente diferentes
+2. **Volumen de Datos**: 3000+ registros requieren optimización específica por canal
+3. **Seguridad Diferenciada**: ATMs necesitan mayor seguridad que Web/Móvil
+4. **Performance**: Cada cliente requiere diferentes niveles de agregación y filtrado
+
+### 🚀 **Características por BFF**
+
+#### 🌐 **BFF Web** - Optimizado para Navegadores
+- **Datos Completos**: Información detallada con historial completo
+- **Paginación Avanzada**: 50-100 registros por página
+- **Filtros Complejos**: Búsquedas avanzadas y reportes customizables
+- **Funcionalidades Administrativas**: Exportación, reportes ejecutivos, gestión de usuarios
+- **CORS Configurado**: Compatibilidad con React/Angular (`localhost:3000`, `localhost:4200`)
+
+**APIs Principales:**
+```
+GET /api/web/transacciones?page=0&size=50&filters=...
+GET /api/web/cuentas/detalle/{id}?includeHistorial=true
+GET /api/web/reportes/anomalias?fechaDesde=...&fechaHasta=...
+GET /api/web/dashboard/resumen-ejecutivo
+POST /api/web/reportes/custom
+```
+
+#### 📱 **BFF Mobile** - Respuestas Ligeras
+- **Datos Esenciales**: Solo campos necesarios para reducir ancho de banda
+- **Respuestas Comprimidas**: DTOs optimizados con formato minimal
+- **Cache Agresivo**: Duración de cache de 5 minutos
+- **Límites de Registros**: Máximo 20 transacciones por request
+- **Push Notifications**: Alertas sobre anomalías detectadas
+
+**APIs Principales:**
+```
+GET /api/mobile/transacciones/recientes?limit=10
+GET /api/mobile/resumen
+GET /api/mobile/notificaciones/anomalias
+GET /api/mobile/quick-stats
+POST /api/mobile/auth/biometric-login
+```
+
+#### 🏧 **BFF ATM** - Ultra-Seguro
+- **Interfaz Crítica**: Operaciones bancarias de alta seguridad
+- **Validaciones Estrictas**: Verificación de tarjeta + PIN + ATM-ID + Session-ID
+- **Logs de Auditoría**: Registro completo de todas las operaciones
+- **Timeouts Cortos**: Sesiones de máximo 5 minutos
+- **Datos Mínimos**: Solo información crítica para la operación
+
+**APIs Principales:**
+```
+POST /api/atm/auth/validate-card
+POST /api/atm/auth/validate-pin
+GET /api/atm/operaciones/saldo/{cuentaId}
+POST /api/atm/operaciones/retiro/validate
+POST /api/atm/operaciones/retiro/execute
+```
+
+### 📊 **Comparación Técnica BFF**
+
+| Característica | 🌐 Web BFF | 📱 Mobile BFF | 🏧 ATM BFF |
+|----------------|-------------|---------------|-------------|
+| **Sesión JWT** | 2 horas | 7 días | 5 minutos |
+| **Datos por página** | 50-100 | 10-20 | 1-5 |
+| **Autenticación** | Usuario/Password | Biométrica + Device | Tarjeta + PIN |
+| **Cache** | Navegador | Redis/Memory | Sin cache |
+| **Formato respuesta** | Completo + metadatos | Comprimido | Ultra-mínimo |
+| **Headers especiales** | CORS | Device-ID | ATM-ID, Session-ID |
+| **Nivel de seguridad** | Medio | Alto | Ultra-alto |
+
+---
+
+## 🔐 Autenticación JWT Diferenciada
+
+### 🎯 **Sistema de Tokens Especializados**
+
+Cada BFF implementa una estrategia de autenticación JWT optimizada para su contexto de uso:
+
+#### 🌐 **JWT Web** - Administración Empresarial
+```java
+Duración: 2 horas (balance seguridad/usabilidad)
+Algoritmo: HS512 (máxima seguridad)
+Claims: {
+  "client_type": "WEB",
+  "role": "ADMIN|ANALYST|VIEWER",
+  "permissions": ["READ_ALL", "EXPORT_REPORTS", "MANAGE_USERS"]
+}
+Renovación: Endpoint /refresh automático
+Autorización: @PreAuthorize("hasRole('WEB')")
+```
+
+#### 📱 **JWT Mobile** - Persistencia Conveniente
+```java
+Duración: 7 días (conveniencia móvil)
+Algoritmo: HS512 con validación de dispositivo
+Claims: {
+  "client_type": "MOBILE",
+  "device_id": "unique_device_identifier",
+  "role": "MOBILE_USER",
+  "biometric_enabled": true
+}
+Headers requeridos: Device-ID (validación cruzada)
+Autorización: @PreAuthorize("hasRole('MOBILE')")
+```
+
+#### 🏧 **JWT ATM** - Máxima Seguridad
+```java
+Duración: 5 minutos (seguridad extrema)
+Algoritmo: HS512 con doble validación
+Claims: {
+  "client_type": "ATM",
+  "atm_id": "ATM-000001",
+  "session_id": "uuid_session",
+  "card_last_four": "1234"
+}
+Headers requeridos: ATM-ID, Session-ID (validación tricapa)
+Autorización: @PreAuthorize("hasRole('ATM')")
+```
+
+### 🛡️ **Configuración de Seguridad**
+
+#### Spring Security Diferenciado
+```java
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
+public class SecurityConfig {
+    
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authz -> authz
+            // Rutas públicas de autenticación
+            .requestMatchers("/api/web/auth/login").permitAll()
+            .requestMatchers("/api/mobile/auth/login").permitAll()
+            .requestMatchers("/api/atm/auth/validate-card").permitAll()
+            
+            // Rutas protegidas por BFF
+            .requestMatchers("/api/web/**").hasRole("WEB")
+            .requestMatchers("/api/mobile/**").hasRole("MOBILE")
+            .requestMatchers("/api/atm/**").hasRole("ATM")
+        )
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+}
+```
+
+#### JWT Authentication Filter
+```java
+// Asigna authorities específicos por tipo de cliente
+List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+authorities.add(new SimpleGrantedAuthority("ROLE_" + clientType));
+
+// Agregar rol del usuario para permisos granulares
+String userRole = jwtTokenUtil.getRoleFromToken(jwtToken);
+if (userRole != null) {
+    authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole));
+}
+```
+
+### 🔧 **Testing y Validación**
+
+#### Script de Pruebas Automatizado
+El sistema incluye `test-bffs.sh` que valida:
+
+```bash
+✅ Autenticación Web: admin/admin123 → Token JWT 2h
+✅ Autenticación Mobile: demo/demo123 → Token JWT 7d  
+✅ Autenticación ATM: Tarjeta + PIN → Token JWT 5min
+✅ Endpoints protegidos con JWT válido
+✅ Autorización por roles funcionando
+✅ Headers específicos validados
+```
 
 ---
 
@@ -104,40 +296,62 @@ Un sistema empresarial de procesamiento por lotes (batch) desarrollado en Spring
 - **Políticas de Reintentos Clasificadas**: 5 reintentos para errores de BD, 3 para RuntimeException, 2 para ValidationException
 
 1. [Arquitectura y Stack Tecnológico](#-arquitectura-y-stack-tecnológico)
-2. [Características Principales](#-características-principales)
-3. [Escalamiento Paralelo y Optimización](#-escalamiento-paralelo-y-optimización)
-4. [Sistema de Particiones Empresarial](#-sistema-de-particiones-empresarial)
-5. [Implementación Real de Particiones - Análisis Técnico](#-implementación-real-de-particiones---análisis-técnico)
-6. [Políticas Personalizadas de Tolerancia a Fallos](#-políticas-personalizadas-de-tolerancia-a-fallos)
-7. [Sistema de Validación Empresarial](#-sistema-de-validación-empresarial)
-8. [Requisitos del Sistema](#-requisitos-del-sistema)
-9. [Instalación y Configuración](#-instalación-y-configuración)
-10. [Ejecución del Sistema](#-ejecución-del-sistema)
-11. [Base de Datos y Esquema](#-base-de-datos-y-esquema)
-12. [Detección de Anomalías](#-detección-de-anomalías)
-13. [Evidencias del Sistema](#-evidencias-del-sistema)
-14. [Estructura del Proyecto](#-estructura-del-proyecto)
-15. [Configuración Avanzada](#-configuración-avanzada)
-16. [Troubleshooting](#-troubleshooting)
-17. [Licencia y Contacto](#-licencia-y-contacto)
+2. [Sistema Backend-for-Frontend (BFF)](#-sistema-backend-for-frontend-bff)
+3. [Autenticación JWT Diferenciada](#-autenticación-jwt-diferenciada)
+4. [Características Principales](#-características-principales)
+5. [Escalamiento Paralelo y Optimización](#-escalamiento-paralelo-y-optimización)
+6. [Sistema de Particiones Empresarial](#-sistema-de-particiones-empresarial)
+7. [Implementación Real de Particiones - Análisis Técnico](#-implementación-real-de-particiones---análisis-técnico)
+8. [Políticas Personalizadas de Tolerancia a Fallos](#-políticas-personalizadas-de-tolerancia-a-fallos)
+9. [Sistema de Validación Empresarial](#-sistema-de-validación-empresarial)
+10. [Requisitos del Sistema](#-requisitos-del-sistema)
+11. [Instalación y Configuración](#-instalación-y-configuración)
+12. [Ejecución del Sistema](#-ejecución-del-sistema)
+13. [Base de Datos y Esquema](#-base-de-datos-y-esquema)
+14. [Detección de Anomalías](#-detección-de-anomalías)
+15. [Evidencias del Sistema](#-evidencias-del-sistema)
+16. [Estructura del Proyecto](#-estructura-del-proyecto)
+17. [Configuración Avanzada](#-configuración-avanzada)
+18. [Troubleshooting](#-troubleshooting)
+19. [Licencia y Contacto](#-licencia-y-contacto)
 
 ---
 
 ## 🏗️ Arquitectura y Stack Tecnológico
 
 ### Stack Principal
-- **Spring Boot 3.5.4** - Framework de aplicación
+- **Spring Boot 3.5.4** - Framework de aplicación y BFF
 - **Spring Batch** - Procesamiento por lotes empresarial
+- **Spring Security** - Autenticación JWT y autorización por roles
 - **MySQL 8.0+** - Base de datos productiva
 - **Java 17** - Lenguaje de programación
 - **Maven** - Gestión de dependencias
+- **JWT (JJWT)** - Tokens de autenticación con HS512
+- **Swagger/OpenAPI 3** - Documentación automática de APIs BFF
 
 ### Arquitectura de Componentes
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│        SPRING BOOT PARALLEL PARTITIONED FAULT-TOLERANT APPLICATION        │
+│           SISTEMA BANCARIO EMPRESARIAL - ARQUITECTURA DUAL                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
+│                         🌐 FRONTEND - BFF LAYER                            │
+│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────────────────────┐ │
+│  │  BFF WEB    │  │  BFF MOBILE  │  │          BFF ATM                    │ │
+│  │ Navigator   │  │  Lightweight │  │       Ultra-Secure                  │ │
+│  │ Complete    │  │  Compressed  │  │     Critical Operations             │ │
+│  │ Data + Adm  │  │  Push Notif. │  │     Audit + Timeouts               │ │
+│  └─────────────┘  └──────────────┘  └─────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                      🔐 JWT AUTHENTICATION LAYER                           │
+│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────────────────────┐ │
+│  │ JWT WEB     │  │ JWT MOBILE   │  │         JWT ATM                     │ │
+│  │ 2 hours     │  │ 7 days       │  │       5 minutes                     │ │
+│  │ Admin roles │  │ Device validation│      Card + PIN validation         │ │
+│  │ ROLE_WEB    │  │ ROLE_MOBILE  │  │       ROLE_ATM                     │ │
+│  └─────────────┘  └──────────────┘  └─────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────────────┤
+│        ⚙️ BACKEND - SPRING BOOT PARALLEL PARTITIONED BATCH PROCESSING      │
 │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────────────────────┐ │
 │  │   READERS   │  │  PROCESSORS  │  │            WRITERS                  │ │
 │  │ CSV/Database│  │ Calculations │  │   MySQL Batch + Parallel Scaling   │ │
@@ -160,25 +374,11 @@ Un sistema empresarial de procesamiento por lotes (batch) desarrollado en Spring
 │  │+ Per Partition│ │+ Granular FT │  │  + Partition Handler Pool          │ │
 │  └─────────────┘  └──────────────┘  └─────────────────────────────────────┘ │
 ├─────────────────────────────────────────────────────────────────────────────┤
+│                          🏛️ DATA & SECURITY LAYER                          │
 │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────────────────────┐ │
-│  │BUSINESS VAL.│  │PERF. MONITOR │  │        SCALING METRICS              │ │
-│  │Transaction/ │  │& Throughput  │  │  Real-time Performance Analysis     │ │
-│  │Cuenta Level │  │  Analytics   │  │   Parallel + Partition Monitoring  │ │
-│  │+ Partitions │  │+ Distributed │  │   Load Balance Distribution         │ │
-│  └─────────────┘  └──────────────┘  └─────────────────────────────────────┘ │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                      SPRING BATCH CORE                                     │
-│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────────────────────┐ │
-│  │    JOBS     │  │    STEPS     │  │         MONITORING                  │ │
-│  │ Parallel    │  │   Parallel   │  │  Parallel Stats & Listeners        │ │
-│  │+Partitioned │  │  +Partitioned│  │   + Partition Analytics             │ │ │
-│  │ Processing  │  │  Chunked (5) │  │   Scaling Analytics                │ │
-│  └─────────────┘  └──────────────┘  └─────────────────────────────────────┘ │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                       MySQL DATABASE                                       │
-│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────────────────────┐ │
-│  │ Transacciones│ │   Cuentas    │  │      Anomalías Detectadas          │ │
-│  │   Intereses  │  │Estados Cuenta│  │  Spring Batch Meta + Scaling       │ │
+│  │ Transacciones│ │   Cuentas    │  │      Security & Batch Meta         │ │
+│  │   Intereses  │  │Estados Cuenta│  │  User Auth + Spring Batch Tables   │ │
+│  │   Anomalías  │  │   Usuarios   │  │     + Scaling Analytics            │ │
 │  └─────────────┘  └──────────────┘  └─────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1187,8 +1387,45 @@ WHERE ji.JOB_NAME LIKE '%particiones%' AND se.STATUS = 'COMPLETED';"
 src/
 ├── main/
 │   ├── java/com/duoc/batch_demo/
-│   │   ├── BankBatchSpringBootApplication.java    # 🎯 Jobs híbridos: Multi-Threading + Partitioning
+│   │   ├── BankBatchSpringBootApplication.java    # 🎯 Aplicación híbrida: Batch + BFF APIs
 │   │   ├── DataSourceConfiguration.java           # Configuración H2 optimizada
+│   │   ├── bff/                                  # 🌐 BACKEND-FOR-FRONTEND: APIs diferenciadas
+│   │   │   ├── web/                              # 🌐 BFF Web - Navegadores
+│   │   │   │   ├── WebAuthController.java        # Autenticación JWT 2h
+│   │   │   │   ├── WebTransaccionController.java # APIs completas + paginación
+│   │   │   │   ├── WebReporteController.java     # Reportes ejecutivos
+│   │   │   │   └── WebDashboardController.java   # Dashboard administrativo
+│   │   │   ├── mobile/                           # 📱 BFF Mobile - Dispositivos móviles
+│   │   │   │   ├── MobileAuthController.java     # Autenticación JWT 7d + Biométrica
+│   │   │   │   ├── MobileTransaccionController.java # APIs ligeras + cache agresivo
+│   │   │   │   ├── MobileNotificationController.java # Push notifications
+│   │   │   │   └── MobileQuickStatsController.java   # Estadísticas rápidas
+│   │   │   └── atm/                              # 🏧 BFF ATM - Cajeros automáticos
+│   │   │       ├── ATMAuthController.java        # Autenticación JWT 5min ultra-segura
+│   │   │       ├── ATMOperacionController.java   # Operaciones críticas
+│   │   │       ├── ATMValidationController.java  # Validaciones estrictas
+│   │   │       └── ATMAuditController.java       # Auditoría completa
+│   │   ├── security/                             # 🔐 AUTENTICACIÓN JWT: Seguridad diferenciada
+│   │   │   ├── SecurityConfig.java               # Spring Security + JWT Filter
+│   │   │   ├── JwtTokenUtil.java                 # Generación JWT por tipo cliente
+│   │   │   ├── JwtAuthenticationFilter.java      # Filtro JWT con validación tricapa
+│   │   │   ├── JwtAuthenticationEntryPoint.java  # Manejo errores autenticación
+│   │   │   └── CorsConfig.java                   # CORS Web + Mobile optimizado
+│   │   ├── dto/                                  # 📋 DTOs optimizados por BFF
+│   │   │   ├── web/                              # DTOs completos para Web
+│   │   │   │   ├── WebTransaccionDTO.java        # Datos completos + metadatos
+│   │   │   │   └── WebReporteDTO.java            # Reportes ejecutivos
+│   │   │   ├── mobile/                           # DTOs comprimidos para Mobile
+│   │   │   │   ├── MobileTransaccionDTO.java     # Datos esenciales optimizados
+│   │   │   │   └── MobileNotificationDTO.java    # Notificaciones push
+│   │   │   └── atm/                              # DTOs mínimos para ATM
+│   │   │       ├── ATMOperacionDTO.java          # Datos críticos únicamente
+│   │   │       └── ATMAuditDTO.java              # Logs de auditoría
+│   │   ├── service/                              # 🛠️ Servicios de negocio
+│   │   │   ├── AuthenticationService.java        # Lógica autenticación diferenciada
+│   │   │   ├── TransaccionService.java           # Servicios transacciones
+│   │   │   ├── ReporteService.java               # Generación reportes
+│   │   │   └── AuditService.java                 # Servicios auditoría ATM
 │   │   ├── config/                               # 🔧 Configuraciones Especializadas
 │   │   │   ├── ReaderConfig.java                 # 📖 Lectores dataset semana_3 (1000+ registros)
 │   │   │   ├── WriterConfig.java                 # 📝 Escritores con tolerancia a fallos
@@ -1201,6 +1438,7 @@ src/
 │   │   │   ├── Transaccion.java                  # Modelo transacciones
 │   │   │   ├── Cuenta.java                       # Modelo cuentas  
 │   │   │   ├── AnomaliaTransaccion.java          # Modelo anomalías detectadas
+│   │   │   ├── Usuario.java                      # Modelo usuarios BFF
 │   │   │   └── ScalingMetrics.java               # 📊 Métricas de rendimiento híbrido
 │   │   ├── processor/                            # 🧠 MULTI-THREADING: Procesadores intensivos
 │   │   │   ├── TransaccionProcessor.java         # Lógica compleja transacciones
@@ -1213,8 +1451,10 @@ src/
 │   │       ├── ScalingPerformanceListener.java   # 🚀 MULTI-THREADING: Métricas TaskExecutors
 │   │       └── PartitionPerformanceListener.java # 🧩 PARTITIONING: Métricas distribución
 │   └── resources/
-│       ├── application.properties                # Configuración TaskExecutors + Particiones
-│       ├── schema-mysql.sql                      # Schema optimizado H2
+│       ├── application.properties                # Configuración TaskExecutors + Particiones + JWT
+│       ├── application-oracle.properties         # Configuración Oracle Cloud
+│       ├── schema-mysql.sql                      # Schema optimizado H2 + tablas usuarios
+│       ├── test-bffs.sh                         # 🧪 Script pruebas automatizado BFF
 │       └── data/semana_3/                       # 🗂️ Dataset empresarial (1000+ registros)
 │           ├── transacciones.csv                 # 1000+ transacciones para particiones
 │           ├── intereses.csv                     # 1000+ cálculos para multi-threading
@@ -1698,6 +1938,69 @@ ORDER BY start_time DESC LIMIT 10;
 ```
 
 *📊 **Dataset Real de Producción**: Este proyecto ahora procesa el dataset de **Semana 3** con **1,000+ registros por archivo** (3,000+ registros totales), justificando completamente la arquitectura híbrida enterprise. La separación de responsabilidades demuestra dominio profesional: Multi-threading para lógica intensiva y Partitions para distribución geográfica/temporal.*
+
+*📊 **Dataset Real de Producción**: Este proyecto ahora procesa el dataset de **Semana 3** con **1,000+ registros por archivo** (3,000+ registros totales), justificando completamente la arquitectura híbrida enterprise. La separación de responsabilidades demuestra dominio profesional: Multi-threading para lógica intensiva y Partitions para distribución geográfica/temporal.*
+
+---
+
+## 🔗 Referencia Rápida de APIs BFF
+
+### 🌐 **Web BFF Endpoints** (Puerto 8080)
+
+#### Autenticación
+```bash
+POST /api/web/auth/login           # Login admin/admin123 → JWT 2h
+POST /api/web/auth/refresh         # Renovar token automático
+```
+
+#### Datos Completos
+```bash
+GET /api/web/transacciones         # Lista completa + paginación
+GET /api/web/cuentas              # Cuentas con historial completo
+GET /api/web/anomalias            # Anomalías detectadas detalladas
+GET /api/web/dashboard            # Dashboard administrativo
+```
+
+### 📱 **Mobile BFF Endpoints** (Puerto 8080)
+
+#### Autenticación Móvil
+```bash
+POST /api/mobile/auth/login        # Login demo/demo123 → JWT 7d
+Header: Device-ID: mobile-device-001
+```
+
+#### Datos Ligeros
+```bash
+GET /api/mobile/resumen           # Resumen optimizado
+GET /api/mobile/transacciones     # Últimas 10 transacciones
+GET /api/mobile/notificaciones    # Alertas push
+```
+
+### 🏧 **ATM BFF Endpoints** (Puerto 8080)
+
+#### Autenticación Ultra-Segura
+```bash
+POST /api/atm/auth/validate-card   # Validación tarjeta
+POST /api/atm/auth/validate-pin    # PIN + headers ATM-ID
+```
+
+#### Operaciones Críticas
+```bash
+GET /api/atm/saldo/{id}           # Solo saldo actual
+POST /api/atm/retiro/validate     # Validar operación
+Headers: ATM-ID, Session-ID (requeridos)
+```
+
+### 🧪 **Pruebas Automatizadas**
+```bash
+chmod +x test-bffs.sh
+./test-bffs.sh                    # Valida todos los BFFs automáticamente
+```
+
+**Credenciales de Prueba:**
+- **Web**: admin/admin123 (Token 2h)
+- **Mobile**: demo/demo123 (Token 7d) 
+- **ATM**: Tarjeta + PIN (Token 5min)
 
 ### Licencia
 Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.

@@ -21,8 +21,8 @@ import io.jsonwebtoken.security.Keys;
 public class JwtTokenUtil {
 
     // Clave secreta para firmar tokens (en producción usar configuración externa)
-    // Clave de 512 bits (64 bytes) para HS512 - cumple con RFC 7518
-    private final String SECRET = "bffBankingSecretKeyForDuocProject2025VeryLongAndSecureKeyThatMeetsThe512BitRequirementForHS512Algorithm";
+    // La clave debe ser de al menos 512 bits (64 caracteres) para HS512
+    private final String SECRET = "bffBankingSecretKeyForDuocProject2025VeryLongAndSecureKeyMustBe512BitsMinimumForHS512AlgorithmToWorkProperly";
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
     // Tiempos de expiración por tipo de cliente
@@ -123,6 +123,14 @@ public class JwtTokenUtil {
     public String getClientTypeFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
         return (String) claims.get("client_type");
+    }
+
+    /**
+     * Obtiene el rol del usuario del token
+     */
+    public String getRoleFromToken(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        return (String) claims.get("role");
     }
 
     /**
