@@ -46,15 +46,39 @@ public class SecurityConfig {
             // Configuración de sesiones stateless
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
-            // Configuración de autorización por rutas - SIMPLIFICADA PARA DEPURACIÓN
+            // Configuración de autorización por rutas específicas para BFFs
             .authorizeHttpRequests(authz -> authz
-                // TEMPORALMENTE: Permitir todas las rutas de API para aislar el problema
-                .requestMatchers("/api/**").permitAll()
+                // Rutas públicas - NO requieren autenticación
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
                 
-                // Cualquier otra ruta requiere autenticación
-                .anyRequest().authenticated()
+                // Endpoints de autenticación BFF - NO requieren autenticación previa
+                .requestMatchers("/api/web/auth/login").permitAll()
+                .requestMatchers("/api/mobile/auth/login").permitAll()
+                .requestMatchers("/api/atm/auth/validate-card").permitAll()
+                
+                // Endpoints BFF protegidos - requieren autenticación JWT
+                .requestMatchers("/api/web/**").authenticated()
+                .requestMatchers("/api/mobile/**").authenticated()
+                .requestMatchers("/api/atm/**").authenticated()
+                
+                // Otras rutas por defecto son permitidas (esto evita bloquear recursos estáticos)
+                .anyRequest().permitAll()
+            )
+            
+            // Configuración de manejo de excepciones de autenticación
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(401);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"Token requerido para acceder a esta ruta BFF\"}");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(403);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\":\"Forbidden\",\"message\":\"Acceso denegado para esta ruta BFF\"}");
+                })
             )
             
             // Agregar filtro JWT antes del filtro de autenticación estándar
