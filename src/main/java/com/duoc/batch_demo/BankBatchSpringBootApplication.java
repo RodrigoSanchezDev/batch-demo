@@ -1,11 +1,9 @@
 package com.duoc.batch_demo;
 
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.partition.PartitionHandler;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -15,7 +13,6 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.support.JdbcTransactionManager;
@@ -35,131 +32,25 @@ import com.duoc.batch_demo.model.Transaccion;
 public class BankBatchSpringBootApplication {
 
     public static void main(String[] args) throws Exception {
-        System.out.println("\n===== SISTEMA DE PROCESAMIENTO BANCARIO BATCH CON ESCALAMIENTO PARALELO Y PARTICIONES =====");
-        System.out.println("Iniciando procesamiento con 3 hilos paralelos, 4 particiones y chunks de tamaño 5...\n");
-        System.out.println("=== CONFIGURACIÓN DE ESCALAMIENTO PARALELO Y PARTICIONES ===");
-        System.out.println("   📊 Multi-threading: 3-6 hilos por job (lógica intensiva)");
-        System.out.println("   🧩 Particiones: 1 hilo coordinador por partición (distribución)");
-        System.out.println("   📦 Tamaño de chunks: 5 registros optimizado");
-        System.out.println("   🛡️  Tolerancia a fallos: Integrada");
-        System.out.println("   🎯 SEPARACIÓN DE RESPONSABILIDADES IMPLEMENTADA");
-        System.out.println("");
-        System.out.println("🎯 DATASET REAL CONFIGURADO (SEMANA 3 - 1000+ REGISTROS):");
-        System.out.println("   📁 Transacciones: data/semana_3/transacciones.csv (~1,000 registros)");
-        System.out.println("   📈 Monitoreo de rendimiento: Activo");
-        System.out.println("   🔄 Procesamiento distribuido: Habilitado");
-        System.out.println("===============================================================================\n");
+        System.out.println("\n==============================================");
+        System.out.println("🏦 SISTEMA BANCARIO BATCH + BFFs INICIANDO...");
+        System.out.println("==============================================");
+        System.out.println("📊 Modo: Servidor API (BFFs habilitados)");
+        System.out.println("🌐 API Web BFF: http://localhost:8080/api/web/");
+        System.out.println("� API Mobile BFF: http://localhost:8080/api/mobile/");
+        System.out.println("� API ATM BFF: http://localhost:8080/api/atm/");
+        System.out.println("� Documentación: http://localhost:8080/swagger-ui.html");
+        System.out.println("==============================================");
 
         // Configurar para no ejecutar automáticamente los jobs
         System.setProperty("spring.batch.job.enabled", "false");
 
-        ConfigurableApplicationContext context = SpringApplication.run(BankBatchSpringBootApplication.class, args);
-
-        try {
-            JobLauncher jobLauncher = context.getBean(JobLauncher.class);
-
-            // ============================================
-            // EJECUTAR LOS 3 JOBS PRINCIPALES CON DETALLES
-            // ============================================
-            
-            System.out.println("=== EJECUTANDO JOB 1: REPORTE DE TRANSACCIONES DIARIAS ===");
-            Job reporteTransaccionesJob = context.getBean("reporteTransaccionesJob", Job.class);
-            jobLauncher.run(reporteTransaccionesJob, new JobParameters());
-
-            System.out.println("=== EJECUTANDO PROCESAMIENTO DE ANOMALÍAS ===");
-            Job anomaliasJob = context.getBean("anomaliasJob", Job.class);
-            jobLauncher.run(anomaliasJob, new JobParameters());
-            // Las anomalías se procesan junto con las transacciones
-
-            System.out.println("\n=== EJECUTANDO JOB 2: CÁLCULO DE INTERESES MENSUALES ===");
-            Job calculoInteresesJob = context.getBean("calculoInteresesJob", Job.class);
-            jobLauncher.run(calculoInteresesJob, new JobParameters());
-
-            System.out.println("=== EJECUTANDO GUARDADO DE DETALLES DE INTERESES ===");
-            Job interesesDetalleJob = context.getBean("interesesDetalleJob", Job.class);
-            jobLauncher.run(interesesDetalleJob, new JobParameters());
-
-            System.out.println("\n=== EJECUTANDO JOB 3: GENERACIÓN DE ESTADOS DE CUENTA ANUALES ===");
-            Job estadosCuentaAnualesJob = context.getBean("estadosCuentaAnualesJob", Job.class);
-            jobLauncher.run(estadosCuentaAnualesJob, new JobParameters());
-
-            System.out.println("=== EJECUTANDO PROCESAMIENTO DE ESTADOS DETALLADOS ===");
-            Job estadosDetalleJob = context.getBean("estadosDetalleJob", Job.class);
-            jobLauncher.run(estadosDetalleJob, new JobParameters());
-
-            // ============================================
-            // NUEVOS JOBS PARA DETECTAR TODAS LAS ANOMALÍAS
-            // ============================================
-            System.out.println("\n=== EJECUTANDO DETECCIÓN AVANZADA DE ANOMALÍAS EN TRANSACCIONES ===");
-            Job deteccionAnomalíasAvanzadasJob = context.getBean("deteccionAnomalíasAvanzadasJob", Job.class);
-            jobLauncher.run(deteccionAnomalíasAvanzadasJob, new JobParameters());
-
-            System.out.println("\n=== EJECUTANDO DETECCIÓN DE DUPLICADOS Y ANOMALÍAS EN CUENTAS ===");
-            Job deteccionAnomalíasCuentasJob = context.getBean("deteccionAnomalíasCuentasJob", Job.class);
-            jobLauncher.run(deteccionAnomalíasCuentasJob, new JobParameters());
-
-            // ============================================
-            // JOBS PARTICIONADOS - DEMOSTRANDO PARTICIONES EN ACCIÓN
-            // ============================================
-            System.out.println("\n=== 🧩 EJECUTANDO JOBS PARTICIONADOS PARA DEMOSTRAR PARTICIONES ===");
-            
-            System.out.println("\n=== EJECUTANDO JOB PARTICIONADO: TRANSACCIONES DISTRIBUIDAS ===");
-            Job particionesTransaccionesJob = context.getBean("particionesTransaccionesJob", Job.class);
-            jobLauncher.run(particionesTransaccionesJob, new JobParameters());
-
-            System.out.println("\n=== EJECUTANDO JOB PARTICIONADO: CUENTAS ANUALES DISTRIBUIDAS ===");
-            Job particionesCuentasJob = context.getBean("particionesCuentasJob", Job.class);
-            jobLauncher.run(particionesCuentasJob, new JobParameters());
-
-            System.out.println("\n=== EJECUTANDO JOB PARTICIONADO: DETECCIÓN DE ANOMALÍAS AVANZADA ===");
-            Job particionesAnomaliasJob = context.getBean("particionesAnomaliasJob", Job.class);
-            jobLauncher.run(particionesAnomaliasJob, new JobParameters());
-
-            System.out.println("\n===== PROCESAMIENTO BANCARIO PARALELO Y PARTICIONADO COMPLETADO EXITOSAMENTE =====");
-            System.out.println("Todos los datos han sido procesados con escalamiento paralelo y particiones en base de datos.");
-            System.out.println("\n📊 RESUMEN DE ESCALAMIENTO Y PARTICIONES:");
-            System.out.println("   🚀 3 hilos de ejecución paralela utilizados");
-            System.out.println("   🧩 4 particiones automáticas configuradas por job particionado");
-            System.out.println("   📦 Chunks de tamaño 25 procesados eficientemente");
-            System.out.println("   🛡️  Tolerancia a fallos aplicada en todos los steps");
-            System.out.println("   📈 Métricas de rendimiento capturadas");
-            System.out.println("   🔄 Procesamiento distribuido habilitado");
-            System.out.println("\n🎯 SISTEMA DE DETECCIÓN AVANZADA DE ANOMALÍAS (Paralelo + Particionado):");
-            System.out.println("   💰 Montos negativos y cero detectados en paralelo");
-            System.out.println("   🔍 Tipos de transacción inválidos identificados concurrentemente");
-            System.out.println("   📋 Registros duplicados encontrados con múltiples threads");
-            System.out.println("   🎂 Edades fuera de rango detectadas paralelamente");
-            System.out.println("   ❓ Datos faltantes identificados con escalamiento");
-            System.out.println("\n🗄️  BASE DE DATOS:");
-            System.out.println("   Conectar a la base de datos para revisar los resultados del procesamiento.");
-            System.out.println("   📋 Tablas: transacciones, cuentas, cuentas_anuales,");
-            System.out.println("            intereses_calculados, anomalias_transacciones, estados_cuenta_anuales");
-            System.out.println("   📊 Logs de escalamiento y particiones disponibles arriba para análisis.\n");
-
-        } catch (Exception e) {
-            System.err.println("❌ Error durante el procesamiento: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // Información final
-            System.out.println("✅ Aplicación completada. Los datos permanecen en base de datos para revisión.");
-            System.out.println("🧩 Sistema con particiones implementado exitosamente.");
-            
-            // Cierre automático del contexto
-            System.out.println("\n🔄 Cerrando aplicación automáticamente en 3 segundos...");
-            try {
-                Thread.sleep(3000); // 3 segundos para ver el mensaje
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-            }
-            
-            // Cierre limpio del contexto de Spring
-            if (context != null) {
-                context.close();
-            }
-            
-            // Finalizar la aplicación
-            System.exit(0);
-        }
+        SpringApplication.run(BankBatchSpringBootApplication.class, args);
+        
+        System.out.println("\n🚀 Servidor iniciado exitosamente!");
+        System.out.println("📡 Escuchando en puerto 8080...");
+        System.out.println("💡 Presiona Ctrl+C para detener el servidor");
+        System.out.println("==============================================");
     }
 
     // ============================================
