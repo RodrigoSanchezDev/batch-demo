@@ -313,7 +313,8 @@ El sistema incluye `test-bffs.sh` que valida:
 16. [Estructura del Proyecto](#-estructura-del-proyecto)
 17. [Configuración Avanzada](#-configuración-avanzada)
 18. [Troubleshooting](#-troubleshooting)
-19. [Licencia y Contacto](#-licencia-y-contacto)
+19. [Evidencias del Sistema BFF](#-evidencias-del-sistema-bff)
+20. [Licencia y Contacto](#-licencia-y-contacto)
 
 ---
 
@@ -2001,6 +2002,36 @@ chmod +x test-bffs.sh
 - **Web**: admin/admin123 (Token 2h)
 - **Mobile**: demo/demo123 (Token 7d) 
 - **ATM**: Tarjeta + PIN (Token 5min)
+
+---
+
+## 📸 Evidencias del Sistema BFF
+
+### 🌐 **Documentación Swagger - APIs BFF**
+![Swagger UI BFF](docs/images/BFF-swagger.png)
+*Documentación automática de todos los endpoints BFF con OpenAPI 3.0*
+
+### 🔐 **Autenticación Web BFF**
+![Autenticación Web](docs/images/BFF-Test-auth-web.png)
+*Prueba de autenticación Web BFF: `POST /api/web/auth/login` - Token JWT 2 horas*
+
+### 📱 **Endpoints Mobile BFF**
+![Mobile BFF](docs/images/BFF-mobile.png)
+*APIs Mobile optimizadas con Device-ID y Token JWT de 7 días*
+
+### 🌐 **Endpoints Web BFF**
+![Web BFF](docs/images/BFF-web.png)
+*APIs Web completas con datos extensos y funcionalidades administrativas*
+
+### 🏧 **Endpoints ATM BFF**
+![ATM BFF](docs/images/BFF-ATM.png)
+*APIs ATM ultra-seguras con validaciones estrictas y Token JWT de 5 minutos*
+
+### 🧪 **Script de Pruebas Automatizado**
+![Tests Automatizados](docs/images/Script_tests-auto.png)
+*Ejecución exitosa de `./test-bffs.sh` - Validación completa de los 3 BFFs*
+
+---
 
 ### Licencia
 Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
