@@ -16,28 +16,33 @@ Este documento presenta las **evidencias técnicas completas** del sistema Backe
 
 #### 🔍 **Análisis Técnico de la Evidencia:**
 
-Esta captura demuestra la **documentación automática generada por OpenAPI 3.0** que incluye:
+Esta captura muestra la **documentación Swagger real** del "Sistema Bancario BFF - APIs Multi-Cliente" (v1.0.0, OAS 3.0):
 
-- **✅ 3 Controladores BFF Diferenciados**: 
-  - `ATMAuthController`: APIs ultra-seguras para cajeros automáticos
-  - `MobileAuthController`: APIs optimizadas para dispositivos móviles
-  - `WebAuthController`: APIs completas para navegadores web
+- **✅ 3 BFFs Diferenciados por Puerto**:
+  - **🌐 BFF Web (Puerto 8081)**: Aplicaciones web (React, Angular), JWT con sesiones de 2 horas
+  - **📱 BFF Móvil (Puerto 8082)**: Aplicaciones móviles nativas, respuestas ligeras, cache agresivo, JWT 7 días + biometría
+  - **🏧 BFF ATM (Puerto 8083)**: Cajeros automáticos, máxima seguridad, sesiones ultra-cortas, tokens de 5 minutos
 
-- **✅ Endpoints Especializados por Canal**:
-  - **Web**: 12 endpoints con datos completos y funcionalidades administrativas
-  - **Mobile**: 8 endpoints ligeros con optimización de ancho de banda
-  - **ATM**: 6 endpoints críticos con máxima seguridad
+- **✅ Características Técnicas Visibles**:
+  - **Audiencias específicas**: Web (React/Angular), Mobile (apps nativas), ATM (cajeros)
+  - **Autenticación diferenciada**: JWT específico + validación de tarjeta/PIN/biometría según cliente
+  - **Endpoints especializados**: `/api/web/*`, `/api/mobile/*`, `/api/atm/*`
 
-- **✅ Documentación Automática**: 
-  - Parámetros de entrada detallados por endpoint
-  - Códigos de respuesta HTTP específicos (200, 401, 403)
-  - Esquemas de datos (DTOs) por tipo de cliente
-  - Headers requeridos (Device-ID para Mobile, ATM-ID para ATM)
+- **✅ Sección de Seguridad Implementada**:
+  - Cada BFF tiene su propio sistema de autenticación
+  - Tokens JWT específicos por tipo de cliente
+  - Validaciones diferenciadas según criticidad
+
+- **✅ Base de Datos Procesada**:
+  - 3000+ transacciones procesadas
+  - Detección automática de anomalías
+  - Cálculo de intereses y estados de cuenta
+  - Arquitectura híbrida: Multi-Threading + Partitioning
 
 #### 📋 **Valor Técnico Demostrado**:
-- Implementación correcta de **OpenAPI 3.0** con Spring Boot 3.5.4
-- **Separación clara de responsabilidades** por tipo de cliente
-- **Documentación autodescriptiva** para equipos de desarrollo
+- **Patrón BFF correctamente implementado** con separación por puerto y funcionalidad
+- **OpenAPI 3.0** completamente configurado con documentación autodescriptiva
+- **Arquitectura híbrida** combinando procesamiento batch con APIs diferenciadas
 
 ---
 
@@ -47,7 +52,7 @@ Esta captura demuestra la **documentación automática generada por OpenAPI 3.0*
 
 #### 🔍 **Análisis Técnico de la Evidencia:**
 
-Esta captura muestra la **ejecución real del endpoint de autenticación Web** con los siguientes elementos técnicos:
+Esta captura muestra la **ejecución real del comando curl** para autenticación Web:
 
 - **✅ Comando curl Ejecutado**:
   ```bash
@@ -56,85 +61,87 @@ Esta captura muestra la **ejecución real del endpoint de autenticación Web** c
     -d '{"username":"admin","password":"admin123"}'
   ```
 
-- **✅ Respuesta JWT Generada**:
-  - **Token JWT válido** con algoritmo HS512
-  - **Duración configurada**: 2 horas (7200000 ms)
-  - **Claims específicos**: `client_type: "WEB"`, `role: "ADMIN"`
-  - **Formato estándar**: Header.Payload.Signature
+- **✅ Respuesta JWT Real Generada**:
+  - **Token JWT completo**: Estructura Header.Payload.Signature visible
+  - **Claims específicos**: `"client_type": "WEB"`, `"token_type": "Bearer"`
+  - **Expiración configurada**: `"expires_in": 7200` (2 horas)
+  - **Usuario autenticado**: `"user": {"role": "ADMIN"}`
 
-- **✅ Configuración de Seguridad**:
+- **✅ Configuración de Seguridad Funcionando**:
   - Autenticación exitosa con credenciales `admin/admin123`
-  - Generación automática de token con expiración diferenciada
-  - Headers HTTP correctos (`Content-Type: application/json`)
+  - Token válido generado para BFF Web específicamente
+  - Headers HTTP correctos en la respuesta
 
 #### 📋 **Valor Técnico Demostrado**:
-- **Autenticación JWT funcional** con Spring Security
-- **Diferenciación por cliente**: Token Web con 2 horas de duración
-- **Seguridad implementada**: Algoritmo HS512 con clave de 512+ bits
+- **JWT funcional** con Spring Security correctamente configurado
+- **Diferenciación por cliente**: Token específico para BFF Web con duración de 2 horas
+- **Autenticación enterprise**: Roles y permisos implementados
 
 ---
 
-### 📱 **Evidencia 3: APIs Mobile BFF Optimizadas**
-
-![Mobile BFF](docs/images/BFF-mobile.png)
-
-#### 🔍 **Análisis Técnico de la Evidencia:**
-
-Esta captura demuestra la **especialización de APIs para dispositivos móviles**:
-
-- **✅ Endpoints Mobile Específicos**:
-  - `POST /api/mobile/auth/login`: Autenticación con Device-ID
-  - `GET /api/mobile/resumen`: Datos comprimidos y esenciales
-  - `GET /api/mobile/transacciones`: Últimas 10 transacciones (limitadas)
-  - `GET /api/mobile/notificaciones`: Sistema de alertas push
-
-- **✅ Optimizaciones Móviles Visibles**:
-  - **Header Device-ID**: Requerido para validación de dispositivo
-  - **Respuestas Ligeras**: DTOs optimizados sin datos innecesarios
-  - **Token JWT 7 días**: Conveniencia para experiencia móvil
-  - **Cache Agresivo**: Configuración de 5 minutos para reducir requests
-
-- **✅ Diferenciación Técnica**:
-  - Endpoints únicos no disponibles en Web/ATM
-  - Validación cruzada Device-ID + JWT Token
-  - Límites de datos específicos (máximo 20 registros)
-
-#### 📋 **Valor Técnico Demostrado**:
-- **Patrón BFF correctamente implementado** con optimización móvil
-- **Validación multicapa**: JWT + Device-ID + rol MOBILE
-- **Performance optimizada**: Datos mínimos y cache inteligente
-
----
-
-### 🌐 **Evidencia 4: APIs Web BFF Empresariales**
+### 🌐 **Evidencia 3: APIs Web BFF Empresariales**
 
 ![Web BFF](docs/images/BFF-web.png)
 
 #### 🔍 **Análisis Técnico de la Evidencia:**
 
-Esta captura muestra las **APIs Web completas para administración empresarial**:
+Esta captura muestra los **endpoints Web BFF reales implementados**:
 
-- **✅ Funcionalidades Administrativas**:
-  - `GET /api/web/transacciones`: Lista completa con paginación avanzada
-  - `GET /api/web/cuentas`: Datos históricos completos
-  - `GET /api/web/anomalias`: Reportes detallados de detección
-  - `GET /api/web/dashboard`: Dashboard ejecutivo con métricas
+- **✅ Web Authentication (4 endpoints)**:
+  - `GET /api/web/auth/me`: Verificar token y obtener información del usuario
+  - `POST /api/web/auth/refresh`: Refresh token para cliente web
+  - `POST /api/web/auth/logout`: Logout para cliente web
+  - `POST /api/web/auth/login`: Login para cliente web
 
-- **✅ Características Empresariales**:
-  - **Paginación Avanzada**: 50-100 registros por página
-  - **Filtros Complejos**: Búsquedas por fecha, monto, tipo
-  - **Datos Completos**: Sin limitaciones de información
-  - **Exportación**: Funcionalidades de reportes ejecutivos
+- **✅ Web Cuentas (6 endpoints empresariales)**:
+  - `GET /api/web/cuentas`: Obtener todas las cuentas con paginación
+  - `GET /api/web/cuentas/{cuentaId}`: Obtener detalle completo de una cuenta
+  - `GET /api/web/cuentas/tipo/{tipo}`: Obtener cuentas por tipo
+  - `GET /api/web/cuentas/export`: Exportar cuentas (funcionalidad empresarial)
+  - `GET /api/web/cuentas/dashboard`: Dashboard de cuentas
+  - `POST /api/web/cuentas/search`: Búsqueda avanzada con criterios
 
-- **✅ Configuración CORS**:
-  - Compatibilidad con React (`localhost:3000`)
-  - Compatibilidad con Angular (`localhost:4200`)
-  - Headers permitidos para desarrollo frontend
+- **✅ Web Transacciones (5 endpoints completos)**:
+  - `GET /api/web/transacciones`: Obtener transacciones con paginación
+  - `GET /api/web/transacciones/export`: Exportar transacciones
+  - `GET /api/web/transacciones/estadisticas`: Estadísticas de transacciones
+  - `GET /api/web/transacciones/anomalias`: Anomalías detectadas
+  - `POST /api/web/transacciones/search`: Búsqueda de transacciones
 
 #### 📋 **Valor Técnico Demostrado**:
-- **BFF Web enterprise** con funcionalidades completas
-- **Separación clara** vs APIs Mobile/ATM más restrictivas
-- **Integración frontend**: CORS configurado para frameworks modernos
+- **15 endpoints Web** con funcionalidades empresariales completas
+- **Capacidades administrativas**: Export, dashboard, búsquedas avanzadas, estadísticas
+- **APIs robustas**: Paginación, filtros, detalle completo de datos
+
+---
+
+### 📱 **Evidencia 4: APIs Mobile BFF Optimizadas**
+
+![Mobile BFF](docs/images/BFF-mobile.png)
+
+#### 🔍 **Análisis Técnico de la Evidencia:**
+
+Esta captura demuestra las **APIs Mobile optimizadas reales**:
+
+- **✅ Mobile Authentication (5 endpoints)**:
+  - `GET /api/mobile/auth/status`: Verificar estado de sesión
+  - `POST /api/mobile/auth/refresh`: Refresh token móvil
+  - `POST /api/mobile/auth/logout`: Logout móvil
+  - `POST /api/mobile/auth/login`: Login móvil estándar
+  - `POST /api/mobile/auth/biometric-login`: Login con biometría (específico móvil)
+
+- **✅ Mobile Transacciones (5 endpoints ligeros)**:
+  - `GET /api/mobile/transacciones/resumen`: Resumen rápido de transacciones
+  - `GET /api/mobile/transacciones/recientes`: Transacciones recientes (limitadas)
+  - `GET /api/mobile/transacciones/quick-stats`: Estadísticas rápidas
+  - `GET /api/mobile/transacciones/notificaciones`: Notificaciones de anomalías
+  - `GET /api/mobile/transacciones/fecha/{fecha}`: Transacciones por fecha específica
+
+#### 📋 **Valor Técnico Demostrado**:
+- **10 endpoints móviles** optimizados para dispositivos con recursos limitados
+- **Autenticación biométrica**: Endpoint específico para login con biometría
+- **Datos esenciales**: Resúmenes, recientes, quick-stats (respuestas ligeras)
+- **Optimización móvil**: Menos endpoints que Web, datos más comprimidos
 
 ---
 
@@ -146,26 +153,25 @@ Esta captura muestra las **APIs Web completas para administración empresarial**
 
 Esta captura demuestra las **APIs ATM con máxima seguridad bancaria**:
 
-- **✅ Autenticación Tricapa**:
-  - `POST /api/atm/auth/validate-card`: Validación de tarjeta
-  - `POST /api/atm/auth/validate-pin`: Verificación PIN + Headers
-  - **Headers Obligatorios**: ATM-ID, Session-ID para trazabilidad
+- **✅ ATM Authentication (5 endpoints críticos)**:
+  - `GET /api/atm/auth/session-status`: Estado de sesión ATM
+  - `POST /api/atm/auth/validate-pin`: Validar PIN
+  - `POST /api/atm/auth/validate-card`: Validar tarjeta bancaria
+  - `POST /api/atm/auth/logout`: Finalizar sesión ATM
+  - `POST /api/atm/auth/extend-session`: Extender sesión ATM
 
-- **✅ Operaciones Críticas**:
-  - `GET /api/atm/saldo/{id}`: Solo saldo actual (datos mínimos)
-  - `POST /api/atm/retiro/validate`: Pre-validación de operaciones
-  - `POST /api/atm/retiro/execute`: Ejecución con auditoría completa
-
-- **✅ Seguridad Ultra-Alta**:
-  - **Token JWT 5 minutos**: Máxima seguridad temporal
-  - **Validación ATM-ID**: Identificación física del cajero
-  - **Session-ID**: Trazabilidad completa de operaciones
-  - **Datos Mínimos**: Solo información crítica (sin historial)
+- **✅ ATM Operations (5 endpoints operacionales)**:
+  - `GET /api/atm/operaciones/transacciones/{cuentaId}`: Últimas transacciones
+  - `GET /api/atm/operaciones/status`: Estado del ATM
+  - `GET /api/atm/operaciones/saldo/{cuentaId}`: Consultar saldo seguro
+  - `POST /api/atm/operaciones/retiro/validate`: Validar retiro
+  - `POST /api/atm/operaciones/retiro/execute`: Ejecutar retiro
 
 #### 📋 **Valor Técnico Demostrado**:
-- **Seguridad bancaria real** con validaciones múltiples
-- **Auditoría completa**: ATM-ID + Session-ID + Card validation
-- **Principio de mínimo privilegio**: Datos estrictamente necesarios
+- **10 endpoints ATM** con enfoque en seguridad y operaciones críticas
+- **Validación multicapa**: Tarjeta + PIN + sesión
+- **Operaciones bancarias**: Saldo, retiros con validación y ejecución separadas
+- **Seguridad temporal**: Sesiones con posibilidad de extensión controlada
 
 ---
 
@@ -175,28 +181,33 @@ Esta captura demuestra las **APIs ATM con máxima seguridad bancaria**:
 
 #### 🔍 **Análisis Técnico de la Evidencia:**
 
-Esta captura muestra la **ejecución exitosa del script de pruebas automatizado**:
+Esta captura muestra la **ejecución real del script `./test-bffs.sh`**:
 
-- **✅ Script test-bffs.sh Ejecutado**:
-  - **Secuencia automática**: Web → Mobile → ATM
-  - **Validación completa**: Autenticación + endpoints protegidos
-  - **Verificación de roles**: Cada BFF con su autorización específica
+- **✅ Secuencia de Pruebas Ejecutada**:
+  1. **✅ PRUEBA 1: BFF Web - Autenticación**: Token obtenido exitosamente
+  2. **✅ PRUEBA 2: BFF Web - Listar Transacciones**: Consulta de transacciones completada
+  3. **✅ PRUEBA 3: BFF Mobile - Autenticación**: Token Mobile obtenido correctamente
+  4. **✅ PRUEBA 4: BFF Mobile - Transacciones Optimizadas**: Datos JSON visualizados
+  5. **✅ PRUEBA 5a: BFF ATM - Validación de Tarjeta**: Sesión temporal creada
+  6. **✅ PRUEBA 5b: BFF ATM - Validación de PIN**: Token ATM obtenido
+  7. **✅ PRUEBA 6: BFF ATM - Consulta de Saldo**: Operación completada
 
-- **✅ Resultados de Pruebas**:
-  - **✅ Web BFF**: Login exitoso + Token 2h + Endpoints accesibles
-  - **✅ Mobile BFF**: Login + Device-ID + Token 7d + APIs ligeras
-  - **✅ ATM BFF**: Validación tarjeta + PIN + Token 5min + Operaciones críticas
+- **✅ Resultados Finales Mostrados**:
+  - **✅ BFF Web**: Optimizado para navegadores
+  - **✅ BFF Mobile**: Optimizado para apps móviles
+  - **✅ BFF ATM**: Optimizado para cajeros automáticos
+  - **🌐 Documentación**: Swagger disponible en http://localhost:8080/swagger-ui.html
 
-- **✅ Validaciones Automáticas**:
-  - Tokens JWT válidos generados para cada cliente
-  - Headers específicos correctamente validados
-  - Códigos de respuesta HTTP apropiados (200, 401, 403)
-  - Autorización por roles funcionando (`ROLE_WEB`, `ROLE_MOBILE`, `ROLE_ATM`)
+- **✅ Datos de Prueba Reales**:
+  - Respuestas JSON con datos reales de transacciones
+  - Tokens JWT válidos generados para cada BFF
+  - Validación de conectividad al servidor confirmada
 
 #### 📋 **Valor Técnico Demostrado**:
-- **Testing automatizado** con validación integral
-- **Cobertura completa**: Los 3 BFFs verificados funcionalmente
-- **CI/CD Ready**: Script reutilizable para pipelines de despliegue
+- **Testing automatizado integral** validando los 3 BFFs
+- **Cobertura funcional completa**: Autenticación + endpoints protegidos
+- **Validación de integración**: Todos los BFFs funcionando correctamente
+- **Script reproducible**: Automatización lista para CI/CD
 
 ---
 
