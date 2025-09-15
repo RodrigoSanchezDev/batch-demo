@@ -9,9 +9,9 @@ echo "=================================================="
 echo ""
 
 # Verificar que el servidor esté ejecutándose
-echo "📡 Verificando conexión al servidor..."
-if ! curl -s http://localhost:8080/actuator/health > /dev/null; then
-    echo "❌ ERROR: El servidor no está ejecutándose en localhost:8080"
+echo "📡 Verificando conexión al servidor HTTPS..."
+if ! curl -s -k https://localhost:8443/actuator/health > /dev/null; then
+    echo "❌ ERROR: El servidor no está ejecutándose en https://localhost:8443"
     echo "💡 Primero ejecuta: ./mvnw spring-boot:run"
     exit 1
 fi
@@ -25,7 +25,7 @@ echo ""
 echo "🌐 PRUEBA 1: BFF Web - Autenticación"
 echo "--------------------------------------------------"
 
-WEB_TOKEN=$(curl -s -X POST "http://localhost:8080/api/web/auth/login" \
+WEB_TOKEN=$(curl -s -k -X POST "https://localhost:8443/api/web/auth/login" \
     -H "Content-Type: application/json" \
     -d '{"username": "admin", "password": "admin123"}' | \
     grep -o '"access_token":"[^"]*' | cut -d'"' -f4)
@@ -45,7 +45,7 @@ echo ""
 echo "🌐 PRUEBA 2: BFF Web - Listar Transacciones"
 echo "--------------------------------------------------"
 
-curl -s -X GET "http://localhost:8080/api/web/transacciones?page=0&size=5" \
+curl -s -k -X GET "https://localhost:8443/api/web/transacciones?page=0&size=5" \
     -H "Authorization: Bearer $WEB_TOKEN" \
     -H "Content-Type: application/json"
 
@@ -59,7 +59,7 @@ echo ""
 echo "📱 PRUEBA 3: BFF Mobile - Autenticación"
 echo "--------------------------------------------------"
 
-MOBILE_TOKEN=$(curl -s -X POST "http://localhost:8080/api/mobile/auth/login" \
+MOBILE_TOKEN=$(curl -s -k -X POST "https://localhost:8443/api/mobile/auth/login" \
     -H "Content-Type: application/json" \
     -d '{"username": "demo", "password": "demo123", "deviceId": "test-device-123"}' | \
     grep -o '"token":"[^"]*' | cut -d'"' -f4)
@@ -79,7 +79,7 @@ echo ""
 echo "📱 PRUEBA 4: BFF Mobile - Transacciones Optimizadas"
 echo "--------------------------------------------------"
 
-curl -s -X GET "http://localhost:8080/api/mobile/transacciones/recientes?limite=3" \
+curl -s -k -X GET "https://localhost:8443/api/mobile/transacciones/recientes?limite=3" \
     -H "Authorization: Bearer $MOBILE_TOKEN" \
     -H "Device-ID: test-device-123" \
     -H "Content-Type: application/json"
@@ -94,7 +94,7 @@ echo ""
 echo "🏧 PRUEBA 5: BFF ATM - Validación de Tarjeta (Paso 1)"
 echo "--------------------------------------------------"
 
-ATM_TEMP_SESSION=$(curl -s -X POST "http://localhost:8080/api/atm/auth/validate-card" \
+ATM_TEMP_SESSION=$(curl -s -k -X POST "https://localhost:8443/api/atm/auth/validate-card" \
     -H "Content-Type: application/json" \
     -d '{"cardNumber": "4111111111111111", "atmId": "ATM-000001", "location": "Sucursal Centro"}' | \
     grep -o '"temp_session":"[^"]*' | cut -d'"' -f4)
@@ -108,7 +108,7 @@ if [ -n "$ATM_TEMP_SESSION" ]; then
     echo "🏧 PRUEBA 5b: BFF ATM - Validación de PIN (Paso 2)"
     echo "--------------------------------------------------"
     
-    ATM_TOKEN=$(curl -s -X POST "http://localhost:8080/api/atm/auth/validate-pin" \
+    ATM_TOKEN=$(curl -s -k -X POST "https://localhost:8443/api/atm/auth/validate-pin" \
         -H "Content-Type: application/json" \
         -d '{"cardNumber": "4111111111111111", "pin": "1234", "atmId": "ATM-000001", "tempSession": "'$ATM_TEMP_SESSION'"}' | \
         grep -o '"session_token":"[^"]*' | cut -d'"' -f4)
@@ -132,7 +132,7 @@ echo ""
 echo "🏧 PRUEBA 6: BFF ATM - Consulta de Saldo"
 echo "--------------------------------------------------"
 
-curl -s -X GET "http://localhost:8080/api/atm/operaciones/saldo/1234" \
+curl -s -k -X GET "https://localhost:8443/api/atm/operaciones/saldo/1234" \
     -H "Authorization: Bearer $ATM_TOKEN" \
     -H "ATM-ID: ATM-000001" \
     -H "Session-ID: cc35cb3e-2445-4011-86f4-9312827820c8" \
@@ -151,5 +151,5 @@ echo "🌐 BFF Web: Optimizado para navegadores"
 echo "📱 BFF Mobile: Optimizado para apps móviles"
 echo "🏧 BFF ATM: Optimizado para cajeros automáticos"
 echo ""
-echo "📖 Documentación completa: http://localhost:8080/swagger-ui.html"
+echo "📖 Documentación completa: https://localhost:8443/swagger-ui.html"
 echo "=================================================="

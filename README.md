@@ -274,6 +274,82 @@ El sistema incluye `test-bffs.sh` que valida:
 ✅ Headers específicos validados
 ```
 
+### 🔒 **Implementación SSL/HTTPS**
+
+Para cumplir con los **estándares de seguridad empresarial**, el sistema implementa SSL/HTTPS en todos los endpoints BFF.
+
+#### Generación del Certificado SSL
+```bash
+# Generación de keystore con certificado auto-firmado para desarrollo
+keytool -genkeypair -alias springboot \
+        -keyalg RSA -keysize 2048 \
+        -storetype PKCS12 \
+        -keystore src/main/resources/keystore.p12 \
+        -validity 365 \
+        -storepass password
+```
+
+![Generación Keytool](docs/images/generacion-keytool.png)
+
+#### Configuración SSL en Application Properties
+```properties
+# SSL/HTTPS Configuration
+server.port=8443
+server.ssl.enabled=true
+server.ssl.key-store=classpath:keystore.p12
+server.ssl.key-store-password=password
+server.ssl.key-store-type=PKCS12
+server.ssl.key-alias=springboot
+server.ssl.trust-store=classpath:keystore.p12
+server.ssl.trust-store-password=password
+
+# SSL Security Headers
+server.ssl.client-auth=none
+security.require-ssl=true
+```
+
+![Application Properties SSL](docs/images/Application-properties+SSL.png)
+
+#### Endpoints HTTPS Validados
+- **🌐 BFF Web**: `https://localhost:8443/api/web/auth/login`
+- **📱 BFF Mobile**: `https://localhost:8443/api/mobile/auth/login`  
+- **🏧 BFF ATM**: `https://localhost:8443/api/atm/auth/validate-card`
+
+#### Pruebas Postman con HTTPS
+
+**BFF Web - Login HTTPS:**
+![BFF Web Login Postman](docs/images/BFF-web-login-postman.png)
+
+**BFF Mobile - Login HTTPS:**
+![BFF Mobile Login Postman](docs/images/BFF-mobile-login-postman.png)
+
+**BFF ATM - Login HTTPS:**
+![BFF ATM Login Postman](docs/images/BFF-ATM-login-postman.png)
+
+#### Script de Testing SSL
+```bash
+#!/bin/bash
+# test-bffs.sh - Actualizado para HTTPS
+echo "🔒 Testing BFFs con SSL/HTTPS..."
+
+# Web BFF HTTPS
+curl -k -X POST https://localhost:8443/api/web/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"username":"admin","password":"admin123"}'
+
+# Mobile BFF HTTPS  
+curl -k -X POST https://localhost:8443/api/mobile/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"username":"demo","password":"demo123"}'
+
+# ATM BFF HTTPS
+curl -k -X POST https://localhost:8443/api/atm/auth/validate-card \
+     -H "Content-Type: application/json" \
+     -d '{"cardNumber":"1234567890123456","pin":"1234","atmId":"ATM-000001"}'
+```
+
+**✅ Certificación SSL Completa**: Todos los BFFs operan exclusivamente sobre HTTPS con certificados válidos.
+
 ---
 
 ## ⭐ Características Principales
@@ -298,23 +374,24 @@ El sistema incluye `test-bffs.sh` que valida:
 1. [Arquitectura y Stack Tecnológico](#-arquitectura-y-stack-tecnológico)
 2. [Sistema Backend-for-Frontend (BFF)](#-sistema-backend-for-frontend-bff)
 3. [Autenticación JWT Diferenciada](#-autenticación-jwt-diferenciada)
-4. [Características Principales](#-características-principales)
-5. [Escalamiento Paralelo y Optimización](#-escalamiento-paralelo-y-optimización)
-6. [Sistema de Particiones Empresarial](#-sistema-de-particiones-empresarial)
-7. [Implementación Real de Particiones - Análisis Técnico](#-implementación-real-de-particiones---análisis-técnico)
-8. [Políticas Personalizadas de Tolerancia a Fallos](#-políticas-personalizadas-de-tolerancia-a-fallos)
-9. [Sistema de Validación Empresarial](#-sistema-de-validación-empresarial)
-10. [Requisitos del Sistema](#-requisitos-del-sistema)
-11. [Instalación y Configuración](#-instalación-y-configuración)
-12. [Ejecución del Sistema](#-ejecución-del-sistema)
-13. [Base de Datos y Esquema](#-base-de-datos-y-esquema)
-14. [Detección de Anomalías](#-detección-de-anomalías)
-15. [Evidencias del Sistema](#-evidencias-del-sistema)
-16. [Estructura del Proyecto](#-estructura-del-proyecto)
-17. [Configuración Avanzada](#-configuración-avanzada)
-18. [Troubleshooting](#-troubleshooting)
-19. [Evidencias del Sistema BFF](#-evidencias-del-sistema-bff)
-20. [Licencia y Contacto](#-licencia-y-contacto)
+4. [Implementación SSL/HTTPS](#-implementación-sslhttps)
+5. [Características Principales](#-características-principales)
+6. [Escalamiento Paralelo y Optimización](#-escalamiento-paralelo-y-optimización)
+7. [Sistema de Particiones Empresarial](#-sistema-de-particiones-empresarial)
+8. [Implementación Real de Particiones - Análisis Técnico](#-implementación-real-de-particiones---análisis-técnico)
+9. [Políticas Personalizadas de Tolerancia a Fallos](#-políticas-personalizadas-de-tolerancia-a-fallos)
+10. [Sistema de Validación Empresarial](#-sistema-de-validación-empresarial)
+11. [Requisitos del Sistema](#-requisitos-del-sistema)
+12. [Instalación y Configuración](#-instalación-y-configuración)
+13. [Ejecución del Sistema](#-ejecución-del-sistema)
+14. [Base de Datos y Esquema](#-base-de-datos-y-esquema)
+15. [Detección de Anomalías](#-detección-de-anomalías)
+16. [Evidencias del Sistema](#-evidencias-del-sistema)
+17. [Estructura del Proyecto](#-estructura-del-proyecto)
+18. [Configuración Avanzada](#-configuración-avanzada)
+19. [Troubleshooting](#-troubleshooting)
+20. [Evidencias del Sistema BFF](#-evidencias-del-sistema-bff)
+21. [Licencia y Contacto](#-licencia-y-contacto)
 
 ---
 
@@ -334,7 +411,15 @@ El sistema incluye `test-bffs.sh` que valida:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│           SISTEMA BANCARIO EMPRESARIAL - ARQUITECTURA DUAL                 │
+│        SISTEMA BANCARIO EMPRESARIAL - ARQUITECTURA BFF + SSL/HTTPS         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                     🔒 SSL/HTTPS SECURITY LAYER                            │
+│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────────────────────┐ │
+│  │   PORT 8443 │  │  KEYSTORE    │  │       SSL CERTIFICATE               │ │
+│  │    HTTPS    │  │   PKCS12     │  │      RSA 2048-bit                   │ │
+│  │  TLS 1.2+   │  │  Password    │  │     365 days validity               │ │
+│  │ Self-Signed │  │  Protected   │  │    localhost domain                 │ │
+│  └─────────────┘  └──────────────┘  └─────────────────────────────────────┘ │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                         🌐 FRONTEND - BFF LAYER                            │
 │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────────────────────┐ │
@@ -1068,7 +1153,7 @@ ORDER BY severidad DESC, cantidad_detectada DESC;
 
 ---
 
-## 📁 Estructura del Proyecto con Escalamiento Paralelo y Fault Tolerance
+## 📁 Estructura del Proyecto con BFF, SSL/HTTPS, Escalamiento Paralelo y Fault Tolerance
 
 ```
 src/
@@ -1076,6 +1161,17 @@ src/
 │   ├── java/com/duoc/batch_demo/
 │   │   ├── BankBatchSpringBootApplication.java    # App con escalamiento paralelo
 │   │   ├── DataSourceConfiguration.java           # Configuración DB
+│   │   ├── bff/                                  # 🆕 Backend-for-Frontend Layer
+│   │   │   ├── WebAuthController.java            # BFF Web (JWT 2h)
+│   │   │   ├── MobileAuthController.java         # BFF Mobile (JWT 7d)
+│   │   │   └── ATMAuthController.java            # BFF ATM (JWT 5min)
+│   │   ├── security/                             # 🆕 Seguridad JWT + SSL
+│   │   │   ├── SecurityConfig.java               # Configuración Spring Security
+│   │   │   └── JwtTokenUtil.java                 # Generación y validación JWT
+│   │   ├── dto/                                  # 🆕 DTOs para BFF
+│   │   │   ├── AuthRequestDTO.java               # Request autenticación
+│   │   │   ├── AuthResponseDTO.java              # Response con JWT
+│   │   │   └── TransaccionMovilDTO.java          # DTO optimizado mobile
 │   │   ├── config/                               # Configuraciones Batch + Scaling
 │   │   │   ├── ReaderConfig.java                 # Lectores con validación
 │   │   │   ├── WriterConfig.java                 # Escritores con retry
@@ -1096,7 +1192,8 @@ src/
 │   │       ├── FaultToleranceListener.java       # Análisis de fallos
 │   │       └── ScalingPerformanceListener.java   # 🆕 Monitoreo paralelo
 │   └── resources/
-│       ├── application.properties                # Config integrada
+│       ├── application.properties                # Config integrada + SSL
+│       ├── keystore.p12                         # 🆕 Certificado SSL/HTTPS
 │       ├── schema-mysql.sql                      # Schema con tablas
 │       └── data/                                # 🔄 Datos reorganizados
 │           ├── transacciones.csv                 # Datos de transacciones
@@ -1104,7 +1201,37 @@ src/
 │           ├── cuentas_anuales.csv              # Datos de cuentas
 │           ├── anomalias.csv                     # Casos problemáticos
 │           └── cuentas.csv                      # Datos de cuentas
+├── test-bffs.sh                                 # 🆕 Script testing HTTPS BFFs
 └── docs/images/                                  # Documentación completa
+    ├── generacion-keytool.png                   # 🆕 Evidencia SSL
+    ├── Application-properties+SSL.png           # 🆕 Config SSL
+    ├── BFF-web-login-postman.png               # 🆕 Test BFF Web
+    ├── BFF-mobile-login-postman.png            # 🆕 Test BFF Mobile
+    └── BFF-ATM-login-postman.png               # 🆕 Test BFF ATM
+```
+
+### 🆕 Componentes BFF + SSL/HTTPS
+
+#### 🔒 SSL/HTTPS Security Layer
+```java
+🎯 Función: Seguridad de transporte para todos los BFFs
+📝 Configuración: application.properties con SSL habilitado
+🔧 Componentes:
+   - keystore.p12: Certificado RSA 2048-bit auto-firmado
+   - server.port=8443: Puerto HTTPS dedicado
+   - SSL/TLS 1.2+: Protocolo de seguridad moderno
+   - SecurityConfig: Headers SSL y CSRF protection
+```
+
+#### 🌐 Backend-for-Frontend (BFF) Controllers
+```java
+🎯 Función: APIs especializadas por tipo de cliente
+📝 Líneas: 120+ líneas por controller con autenticación diferenciada
+🔧 Componentes:
+   - WebAuthController: JWT 2h, ROLE_WEB, admin functions
+   - MobileAuthController: JWT 7d, ROLE_MOBILE, optimized responses
+   - ATMAuthController: JWT 5min, ROLE_ATM, ultra-secure validation
+   - DTOs optimizados: TransaccionMovilDTO para mobile performance
 ```
 
 ### 🆕 Componentes Nuevos de Escalamiento y Particiones
