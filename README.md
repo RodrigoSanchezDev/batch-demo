@@ -1,3 +1,24 @@
+<div align="center">
+
+# ⚡ Batch Demo - Enterprise Banking System
+
+### Sistema Bancario Empresarial con Arquitectura BFF + Procesamiento Batch Híbrido
+
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.4-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Spring Batch](https://img.shields.io/badge/Spring%20Batch-5.x-6DB33F?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-batch)
+[![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
+[![JWT](https://img.shields.io/badge/JWT-Security-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](./LICENSE)
+
+**Sistema bancario empresarial** que combina **arquitectura BFF** (Web, Mobile, ATM) con **procesamiento batch híbrido** (Multi-Threading + Partitioning). Incluye JWT authentication, tolerancia a fallos, y métricas de rendimiento con 95.7% de éxito en jobs batch.
+
+[🚀 Quick Start](#-instalación) • [🏗️ Arquitectura](#️-arquitectura-híbrida-justificada) • [📊 Métricas](#-evidencias-técnicas-de-implementación) • [👤 Autor](#-autor)
+
+---
+
+</div>
+
 # 🏦 Sistema Bancario Empresarial con Arquitectura BFF y Procesamiento Batch Híbrido
 
 ## 🏗️ Arquitectura Híbrida Justificada
@@ -2187,3 +2208,25 @@ Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
 
 *Última actualización: Agosto 2025*  
 *Versión: 1.1 - Escalamiento Paralelo + Fault Tolerance*
+
+---
+
+## 👤 Autor
+
+<div align="center">
+
+**Rodrigo Sanchez**
+
+[![Portfolio](https://img.shields.io/badge/Portfolio-sanchezdev.com-A855F7?style=for-the-badge&logo=googlechrome&logoColor=white)](https://sanchezdev.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-sanchezdev-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sanchezdev)
+[![GitHub](https://img.shields.io/badge/GitHub-RodrigoSanchezDev-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/RodrigoSanchezDev)
+
+</div>
+
+---
+
+<div align="center">
+
+**⭐ Si este proyecto te fue útil, considera darle una estrella ⭐**
+
+</div>
